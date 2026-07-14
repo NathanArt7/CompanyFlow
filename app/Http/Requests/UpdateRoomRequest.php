@@ -6,6 +6,7 @@ use App\Enums\RoomStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use App\Enums\RoomType;
 
 class UpdateRoomRequest extends FormRequest
 {
@@ -26,17 +27,25 @@ class UpdateRoomRequest extends FormRequest
                 'max:255'
             ],
 
+            'type' => [
+                'required',
+                new Enum(RoomType::class),
+            ],
+
             'code' => [
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('rooms', 'code')->ignore($room)
+                Rule::unique('rooms')
+                ->where(fn ($query) => $query->where('entreprise_id',
+                $this->user()->entreprise_id ))->ignore($room),
             ],
 
             'capacite' => [
-                'required',
+                Rule::requiredIf(fn () => $this->input('type') === RoomType::MEETING->value),
+                'nullable',
                 'integer',
-                'min:1'
+                'min:1',
             ],
 
             'localisation' => [

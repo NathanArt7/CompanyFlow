@@ -80,6 +80,7 @@ class RolePermissionSeeder extends Seeder
             $permissions['modifier_utilisateur']->id,
             $permissions['desactiver_compte']->id,
 
+            $permissions['consulter_salle']->id,
             $permissions['creer_salle']->id,
             $permissions['modifier_salle']->id,
             $permissions['supprimer_salle']->id,
@@ -123,6 +124,7 @@ class RolePermissionSeeder extends Seeder
         // ─────────────────────────────────────────────
 
         $superEmploye->permissions()->attach([
+            $permissions['consulter_salle']->id,
             $permissions['reserver_salle']->id,
             $permissions['consulter_disponibilites']->id,
             $permissions['emprunter_materiel']->id,
@@ -141,6 +143,7 @@ class RolePermissionSeeder extends Seeder
         // ─────────────────────────────────────────────
 
         $employe->permissions()->attach([
+            $permissions['consulter_salle']->id,
             $permissions['consulter_disponibilites']->id,
 
             $permissions['creer_ticket']->id,

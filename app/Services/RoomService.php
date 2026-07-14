@@ -5,6 +5,10 @@ namespace App\Services;
 use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use App\Http\Resources\RoomResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RoomService
 {
@@ -22,39 +26,44 @@ class RoomService
         }
 
         try {
-
-    $room = Room::create($data);
+    $room = new Room($data);
+    $room->entreprise_id = $creator->entreprise_id;
+    $room->save();
 
     return response()->json([
         'message' => 'Salle créée avec succès.',
-        'room' => $room,
+        'room' => new RoomResource($room),
     ], 201);
 
 } catch (\Throwable $e) {
-
+    Log::error($e);
     return response()->json([
-        'message' => $e->getMessage(),
-        'file'    => $e->getFile(),
-        'line'    => $e->getLine(),
+    'message' => 'Une erreur est survenue lors de la création de la salle.'
     ], 500);
-
 }
     }
 
     /**
  * Liste toutes les salles.
  */
-public function getAllRooms(): JsonResponse
+public function getAllRooms(User $user): AnonymousResourceCollection
 {
-    $rooms = Room::orderBy('nom')->get();
+    $rooms = Room::where('entreprise_id', $user->entreprise_id)
+        ->orderBy('nom')
+        ->paginate(20);
 
-    return response()->json($rooms);
+    return RoomResource::collection($rooms);
 }
+
 /**
  * Affiche une salle.
  */
-public function getRoom(Room $room): JsonResponse
+public function getRoom(Room $room, User $user): RoomResource
 {
-    return response()->json($room);
+    if ($room->entreprise_id !== $user->entreprise_id) {
+    throw new NotFoundHttpException('Salle introuvable.');
+}
+
+return new RoomResource($room);
 }
 }

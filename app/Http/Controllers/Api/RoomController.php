@@ -15,6 +15,9 @@ class RoomController extends Controller
     ) {
     }
 
+/**
+ * Création d'une salle
+ */
   public function store(StoreRoomRequest $request)
 {
     return $this->roomService->createRoom(
@@ -26,12 +29,21 @@ class RoomController extends Controller
 /**
  * Liste des salles.
  */
-public function index()
+public function index(Request $request)
 {
-    return $this->roomService->getAllRooms();
+    return $this->roomService->getAllRooms(
+        $request->user()
+    );
 }
-public function show(Room $room)
+
+/**
+* Détail d'une salle.
+*/
+public function show(Request $request, Room $room)
 {
-    return $this->roomService->getRoom($room);
+    return $this->roomService->getRoom(
+        $room,
+        $request->user()
+    );
 }
 }

@@ -89,8 +89,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:creer_salle');
 
     Route::get('/rooms', [RoomController::class, 'index'])
-        ->middleware('permission:consulter_salles');
+        ->middleware('permission:consulter_salle');
 
     Route::get('/rooms/{room}', [RoomController::class, 'show'])
-        ->middleware('permission:consulter_salles');
+        ->middleware('permission:consulter_salle');
 });

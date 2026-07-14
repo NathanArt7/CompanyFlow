@@ -30,6 +30,7 @@ class PermissionSeeder extends Seeder
 
             // Salles
             'creer_salle',
+            'consulter_salle',
             'modifier_salle',
             'supprimer_salle',
             'bloquer_salle',
