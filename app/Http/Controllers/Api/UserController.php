@@ -12,6 +12,7 @@ use App\Http\Resources\UserDetailResource;
 use App\Models\User;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\UpdateUserStatusRequest;
+use App\Http\Requests\FilterUserRequest;
 
 class UserController extends Controller
 {
@@ -38,14 +39,15 @@ class UserController extends Controller
 /**
  * Liste des utilisateurs.
  */
-public function index(Request $request)
+public function index(FilterUserRequest $request)
 {
-    $users = $this->userService
-        ->getUsers($request->user());
+    $users = $this->userService->getUsers(
+        $request->validated(),
+        $request->user()
+    );
 
     return UserResource::collection($users);
 }
-
 /**
  * Affiche un utilisateur.
  */

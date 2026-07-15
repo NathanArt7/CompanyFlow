@@ -214,7 +214,7 @@ class UserService
     /**
  * Retourne les utilisateurs de l'entreprise.
  */
-public function getUsers(User $user)
+public function getUsers( array $filters, User $user)
 {
     if (
         ! $user->hasRole(RoleName::SUPER_ADMIN->value)
@@ -225,10 +225,48 @@ public function getUsers(User $user)
         );
     }
 
-    return User::with('role')
-        ->where('entreprise_id', $user->entreprise_id)
-        ->latest()
-        ->paginate(20);
+   $query = User::with('role')
+    ->where('entreprise_id', $user->entreprise_id);
+
+    if (!empty($filters['search'])) {
+
+    $query->where(function ($query) use ($filters) {
+
+        $query
+            ->where('nom', 'like', "%{$filters['search']}%")
+            ->orWhere('prenom', 'like', "%{$filters['search']}%")
+            ->orWhere('email', 'like', "%{$filters['search']}%");
+
+    });
+
+}
+
+if (!empty($filters['role_id'])) {
+
+    $query->where(
+        'role_id',
+        $filters['role_id']
+    );
+
+}
+
+if (array_key_exists('actif', $filters)) {
+
+    $query->where(
+        'actif',
+        $filters['actif']
+    );
+
+}
+
+$query->orderBy(
+    $filters['sort'] ?? 'created_at',
+    $filters['direction'] ?? 'desc'
+);
+
+return $query->paginate(
+    $filters['per_page'] ?? 20
+);
 }
 
 /**

@@ -93,4 +93,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/rooms/{room}', [RoomController::class, 'show'])
         ->middleware('permission:consulter_salle');
+
+    Route::put('/rooms/{room}', [RoomController::class, 'update'])
+    ->middleware('permission:modifier_salle');
+
+    Route::patch('/rooms/{room}/status', [RoomController::class, 'updateStatus'])
+    ->middleware('permission:bloquer_salle');
+
+    Route::delete('/rooms/{room}', [RoomController::class, 'destroy'])
+    ->middleware('permission:supprimer_salle');
 });

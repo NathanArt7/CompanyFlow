@@ -7,6 +7,10 @@ use App\Http\Requests\StoreRoomRequest;
 use App\Services\RoomService;
 use Illuminate\Http\Request;
 use App\Models\Room;
+use App\Http\Requests\UpdateRoomRequest;
+use App\Http\Requests\UpdateRoomStatusRequest;
+use App\Enums\RoomStatus;
+use App\Http\Requests\FilterRoomRequest;
 
 class RoomController extends Controller
 {
@@ -29,9 +33,10 @@ class RoomController extends Controller
 /**
  * Liste des salles.
  */
-public function index(Request $request)
+public function index(FilterRoomRequest $request)
 {
-    return $this->roomService->getAllRooms(
+   return $this->roomService->getAllRooms(
+        $request->validated(),
         $request->user()
     );
 }
@@ -42,6 +47,34 @@ public function index(Request $request)
 public function show(Request $request, Room $room)
 {
     return $this->roomService->getRoom(
+        $room,
+        $request->user()
+    );
+}
+
+public function update(UpdateRoomRequest $request, Room $room)
+{
+    return $this->roomService->updateRoom(
+        $room,
+        $request->validated(),
+        $request->user()
+    );
+}
+public function updateStatus(
+    UpdateRoomStatusRequest $request,
+    Room $room
+)
+{
+    return $this->roomService->updateStatus(
+        $room,
+        RoomStatus::from($request->validated('statut')),
+        $request->user()
+    );
+}
+
+public function destroy(Room $room, Request $request)
+{
+    return $this->roomService->deleteRoom(
         $room,
         $request->user()
     );
