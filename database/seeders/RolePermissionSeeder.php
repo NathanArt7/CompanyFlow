@@ -86,7 +86,13 @@ class RolePermissionSeeder extends Seeder
             $permissions['supprimer_salle']->id,
             $permissions['bloquer_salle']->id,
 
-            $permissions['ajouter_materiel']->id,
+            $permissions['creer_categorie_materiel']->id,
+            $permissions['consulter_categorie_materiel']->id,
+            $permissions['modifier_categorie_materiel']->id,
+            $permissions['supprimer_categorie_materiel']->id,
+
+            $permissions['creer_materiel']->id,
+            $permissions['consulter_materiel']->id,
             $permissions['modifier_materiel']->id,
             $permissions['supprimer_materiel']->id,
             $permissions['modifier_etat_materiel']->id,

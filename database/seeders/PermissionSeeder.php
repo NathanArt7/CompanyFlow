@@ -35,8 +35,15 @@ class PermissionSeeder extends Seeder
             'supprimer_salle',
             'bloquer_salle',
 
+            // Catégories de matériel
+            'creer_categorie_materiel',
+            'consulter_categorie_materiel',
+            'modifier_categorie_materiel',
+            'supprimer_categorie_materiel',
+
             // Matériel
-            'ajouter_materiel',
+            'creer_materiel',
+            'consulter_materiel',
             'modifier_materiel',
             'supprimer_materiel',
             'modifier_etat_materiel',

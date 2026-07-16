@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PasswordResetController;
+use App\Http\Controllers\Api\EquipmentCategoryController;
+use App\Http\Controllers\Api\EquipmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -102,4 +104,68 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::delete('/rooms/{room}', [RoomController::class, 'destroy'])
     ->middleware('permission:supprimer_salle');
-});
+
+        /*
+    |--------------------------------------------------------------------------
+    | Catégories de matériel
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/equipment-categories',
+        [EquipmentCategoryController::class, 'store']
+    )->middleware('permission:creer_categorie_materiel');
+
+    Route::get(
+        '/equipment-categories',
+        [EquipmentCategoryController::class, 'index']
+    )->middleware('permission:consulter_categorie_materiel');
+
+    Route::get(
+        '/equipment-categories/{category}',
+        [EquipmentCategoryController::class, 'show']
+    )->middleware('permission:consulter_categorie_materiel');
+
+    Route::put(
+        '/equipment-categories/{category}',
+        [EquipmentCategoryController::class, 'update']
+    )->middleware('permission:modifier_categorie_materiel');
+
+    Route::delete(
+        '/equipment-categories/{category}',
+        [EquipmentCategoryController::class, 'destroy']
+    )->middleware('permission:supprimer_categorie_materiel');
+
+    /*
+|--------------------------------------------------------------------------
+| Matériels
+|--------------------------------------------------------------------------
+*/
+
+    Route::post(
+        '/equipments',
+        [EquipmentController::class, 'store']
+    )->middleware('permission:creer_materiel');
+
+    Route::get(
+        '/equipments',
+        [EquipmentController::class, 'index']
+    )->middleware('permission:consulter_materiel');
+
+    Route::get(
+        '/equipments/{equipment}',
+        [EquipmentController::class, 'show']
+    )->middleware('permission:consulter_materiel');
+
+    Route::put(
+        '/equipments/{equipment}',
+        [EquipmentController::class, 'update']
+    )->middleware('permission:modifier_materiel');
+
+    Route::delete(
+        '/equipments/{equipment}',
+        [EquipmentController::class, 'destroy']
+    )->middleware('permission:supprimer_materiel');
+
+}
+);
