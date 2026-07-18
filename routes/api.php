@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\EquipmentCategoryController;
 use App\Http\Controllers\Api\EquipmentController;
+use App\Http\Controllers\Api\ReservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +70,27 @@ Route::middleware('auth:sanctum')->group(function () {
     '/entreprise/configuration',
     [EntrepriseController::class, 'updateConfiguration']
 );
+
+/*
+|--------------------------------------------------------------------------
+| Configuration des réservations
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/reservation-settings',
+    [ReservationSettingController::class, 'index']
+)->middleware(
+    'permission:configurer_systeme'
+);
+
+Route::put(
+    '/reservation-settings',
+    [ReservationSettingController::class, 'update']
+)->middleware(
+    'permission:configurer_systeme'
+);
+
     /*
     |--------------------------------------------------------------------------
     | Utilisateurs
@@ -166,6 +188,38 @@ Route::middleware('auth:sanctum')->group(function () {
         '/equipments/{equipment}',
         [EquipmentController::class, 'destroy']
     )->middleware('permission:supprimer_materiel');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Réservations
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/reservations',
+        [ReservationController::class, 'index']
+    );
+
+    Route::post(
+        '/reservations',
+        [ReservationController::class, 'store']
+    );
+
+    Route::get(
+        '/reservations/{reservation}',
+        [ReservationController::class, 'show']
+    );
+
+    Route::put(
+        '/reservations/{reservation}',
+        [ReservationController::class, 'update']
+    );
+
+    Route::patch(
+        '/reservations/{reservation}/cancel',
+        [ReservationController::class, 'cancel']
+    );
+
 
 }
 );

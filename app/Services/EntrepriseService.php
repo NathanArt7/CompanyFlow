@@ -6,6 +6,8 @@ use App\Enums\EntrepriseStatus;
 use App\Models\Entreprise;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use App\Enums\Reservation\DayOfWeek;
+use App\Models\ReservationSetting;
 
 class EntrepriseService
 {
@@ -88,6 +90,10 @@ public function configureEntreprise(
             $data
         );
 
+         $this->initializeReservationSettings(
+            $entreprise
+        );
+
         $this->activateEntreprise(
             $entreprise
         );
@@ -145,4 +151,62 @@ private function activateEntreprise(
 
     ]);
 }
+
+/**
+ * Initialise la configuration des réservations.
+ */
+private function initializeReservationSettings(
+    Entreprise $entreprise
+): void {
+
+    if (
+        $entreprise->reservationSetting()->exists()
+    ) {
+        return;
+    }
+
+    $reservationSetting =
+        $entreprise
+            ->reservationSetting()
+            ->create([
+                'reservation_buffer' => 0,
+            ]);
+
+    $this->createDefaultServiceHours(
+        $reservationSetting
+    );
+
+}
+
+/**
+ * Crée les horaires de service par défaut.
+ */
+private function createDefaultServiceHours(
+    ReservationSetting $reservationSetting
+): void {
+
+    foreach (
+        DayOfWeek::cases()
+        as $day
+    ) {
+
+        $reservationSetting
+            ->serviceHours()
+            ->create([
+
+                'day_of_week' => $day,
+
+                'is_open' => false,
+
+                'start_time' => null,
+
+                'end_time' => null,
+
+            ]);
+
+    }
+
+}
+
+
 }

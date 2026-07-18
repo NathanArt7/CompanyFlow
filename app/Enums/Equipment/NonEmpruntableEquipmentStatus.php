@@ -22,4 +22,9 @@ enum NonEmpruntableEquipmentStatus: string
             'value'
         );
     }
+
+    public function isAvailable(): bool
+{
+    return $this === self::FONCTIONNEL;
+}
 }

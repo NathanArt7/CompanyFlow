@@ -17,4 +17,22 @@ enum EquipmentUsageType: string
             'value'
         );
     }
+
+    /**
+ * Indique si le matériel
+ * peut être réservé.
+ */
+public function isBorrowable(): bool
+{
+    return $this === self::EMPRUNTABLE;
+}
+
+/**
+ * Indique si le matériel
+ * est fixe.
+ */
+public function isFixed(): bool
+{
+    return $this === self::NON_EMPRUNTABLE;
+}
 }

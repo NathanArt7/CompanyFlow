@@ -7,6 +7,7 @@ use App\Enums\RoomType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Room extends Model
 {
@@ -31,4 +32,14 @@ class Room extends Model
     {
         return $this->belongsTo(Entreprise::class);
     }
+
+    /**
+ * Réservations de la salle.
+ */
+public function reservations(): HasMany
+{
+    return $this->hasMany(
+        Reservation::class
+    );
+}
 }

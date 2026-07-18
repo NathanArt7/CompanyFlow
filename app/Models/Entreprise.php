@@ -6,6 +6,7 @@ use App\Enums\EntrepriseStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Entreprise extends Model
 {
@@ -40,4 +41,14 @@ class Entreprise extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    /**
+ * Configuration des réservations.
+ */
+public function reservationSetting(): HasOne
+{
+    return $this->hasOne(
+        ReservationSetting::class
+    );
+}
 }

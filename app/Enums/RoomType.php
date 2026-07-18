@@ -25,4 +25,14 @@ enum RoomType: string
             self::STORAGE => 'Salle de stockage',
         };
     }
+
+    public function isMeetingRoom(): bool
+{
+    return $this === self::MEETING;
+}
+
+public function isStorageRoom(): bool
+{
+    return $this === self::STORAGE;
+}
 }

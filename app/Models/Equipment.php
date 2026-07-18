@@ -6,6 +6,7 @@ use App\Enums\Equipment\EquipmentUsageType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Equipment extends Model
 {
@@ -89,5 +90,16 @@ class Equipment extends Model
             User::class,
             'assigned_to'
         );
+    }
+
+    /**
+ * Réservations utilisant ce matériel.
+ */
+    public function reservations(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Reservation::class,
+            'reservation_equipments'
+        )->withTimestamps();
     }
 }

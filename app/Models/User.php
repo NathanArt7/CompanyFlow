@@ -78,4 +78,25 @@ public function passwordReset()
         PasswordReset::class
     );
 }
+
+/**
+ * Réservations créées par l'utilisateur.
+ */
+public function reservations(): HasMany
+{
+    return $this->hasMany(
+        Reservation::class
+    );
+}
+
+/**
+ * Réservations annulées par l'utilisateur.
+ */
+public function cancelledReservations(): HasMany
+{
+    return $this->hasMany(
+        Reservation::class,
+        'cancelled_by'
+    );
+}
 }

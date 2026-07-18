@@ -20,4 +20,13 @@ enum EmpruntableEquipmentStatus: string
             'value'
         );
     }
+
+    /**
+ * Indique si le matériel
+ * est disponible.
+ */
+public function isAvailable(): bool
+{
+    return $this === self::DISPONIBLE;
+}
 }
