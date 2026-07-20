@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Enums\Reservation;
+use Carbon\Carbon;
 
 enum DayOfWeek: string
 {
@@ -40,4 +41,32 @@ enum DayOfWeek: string
 
         };
     }
+
+    /**
+ * Retourne le jour de la semaine
+ * correspondant à une date.
+ */
+public static function fromCarbon(
+    Carbon $date
+): self {
+
+    return match ($date->dayOfWeek) {
+
+        Carbon::MONDAY => self::MONDAY,
+
+        Carbon::TUESDAY => self::TUESDAY,
+
+        Carbon::WEDNESDAY => self::WEDNESDAY,
+
+        Carbon::THURSDAY => self::THURSDAY,
+
+        Carbon::FRIDAY => self::FRIDAY,
+
+        Carbon::SATURDAY => self::SATURDAY,
+
+        Carbon::SUNDAY => self::SUNDAY,
+
+    };
+
+}
 }

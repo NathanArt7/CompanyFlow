@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\EquipmentCategoryController;
 use App\Http\Controllers\Api\EquipmentController;
 use App\Http\Controllers\Api\ReservationController;
+use App\Http\Controllers\Api\AvailabilityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -219,6 +220,22 @@ Route::put(
         '/reservations/{reservation}/cancel',
         [ReservationController::class, 'cancel']
     );
+
+    Route::prefix('availability')
+    ->controller(AvailabilityController::class)
+    ->group(function () {
+
+        Route::get(
+            '/week',
+            'week'
+        );
+
+        Route::get(
+            '/equipments',
+            'availableEquipments'
+        );
+
+    });
 
 
 }
