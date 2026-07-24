@@ -43,11 +43,17 @@ interface _GlobalComponents {
   MarketingOnboardingStep: typeof import("../../app/features/marketing/components/MarketingOnboardingStep.vue")['default']
   MarketingOnboardingSteps: typeof import("../../app/features/marketing/components/MarketingOnboardingSteps.vue")['default']
   DailySummary: typeof import("../../app/features/reservations/components/DailySummary.vue")['default']
-  ReservationRow: typeof import("../../app/features/reservations/components/ReservationRow.vue")['default']
   ReservationsFilters: typeof import("../../app/features/reservations/components/ReservationsFilters.vue")['default']
   ReservationsHeader: typeof import("../../app/features/reservations/components/ReservationsHeader.vue")['default']
   ReservationsTable: typeof import("../../app/features/reservations/components/ReservationsTable.vue")['default']
   WeekStrip: typeof import("../../app/features/reservations/components/WeekStrip.vue")['default']
+  RoomStatusBadge: typeof import("../../app/features/rooms/components/RoomStatusBadge.vue")['default']
+  RoomTypeBadge: typeof import("../../app/features/rooms/components/RoomTypeBadge.vue")['default']
+  RoomsFilters: typeof import("../../app/features/rooms/components/RoomsFilters.vue")['default']
+  RoomsHeader: typeof import("../../app/features/rooms/components/RoomsHeader.vue")['default']
+  RoomsStats: typeof import("../../app/features/rooms/components/RoomsStats.vue")['default']
+  RoomsTable: typeof import("../../app/features/rooms/components/RoomsTable.vue")['default']
+  Types: typeof import("../../app/features/rooms/types")['default']
   NuxtWelcome: typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']
   NuxtLayout: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
   NuxtErrorBoundary: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -101,11 +107,17 @@ interface _GlobalComponents {
   LazyMarketingOnboardingStep: LazyComponent<typeof import("../../app/features/marketing/components/MarketingOnboardingStep.vue")['default']>
   LazyMarketingOnboardingSteps: LazyComponent<typeof import("../../app/features/marketing/components/MarketingOnboardingSteps.vue")['default']>
   LazyDailySummary: LazyComponent<typeof import("../../app/features/reservations/components/DailySummary.vue")['default']>
-  LazyReservationRow: LazyComponent<typeof import("../../app/features/reservations/components/ReservationRow.vue")['default']>
   LazyReservationsFilters: LazyComponent<typeof import("../../app/features/reservations/components/ReservationsFilters.vue")['default']>
   LazyReservationsHeader: LazyComponent<typeof import("../../app/features/reservations/components/ReservationsHeader.vue")['default']>
   LazyReservationsTable: LazyComponent<typeof import("../../app/features/reservations/components/ReservationsTable.vue")['default']>
   LazyWeekStrip: LazyComponent<typeof import("../../app/features/reservations/components/WeekStrip.vue")['default']>
+  LazyRoomStatusBadge: LazyComponent<typeof import("../../app/features/rooms/components/RoomStatusBadge.vue")['default']>
+  LazyRoomTypeBadge: LazyComponent<typeof import("../../app/features/rooms/components/RoomTypeBadge.vue")['default']>
+  LazyRoomsFilters: LazyComponent<typeof import("../../app/features/rooms/components/RoomsFilters.vue")['default']>
+  LazyRoomsHeader: LazyComponent<typeof import("../../app/features/rooms/components/RoomsHeader.vue")['default']>
+  LazyRoomsStats: LazyComponent<typeof import("../../app/features/rooms/components/RoomsStats.vue")['default']>
+  LazyRoomsTable: LazyComponent<typeof import("../../app/features/rooms/components/RoomsTable.vue")['default']>
+  LazyTypes: LazyComponent<typeof import("../../app/features/rooms/types")['default']>
   LazyNuxtWelcome: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
   LazyNuxtLayout: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
   LazyNuxtErrorBoundary: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>
