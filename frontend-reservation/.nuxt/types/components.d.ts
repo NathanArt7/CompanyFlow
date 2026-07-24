@@ -23,6 +23,16 @@ interface _GlobalComponents {
   ReservationSettingsForm: typeof import("../../app/features/auth/components/ReservationSettingsForm.vue")['default']
   SetPasswordForm: typeof import("../../app/features/auth/components/SetPasswordForm.vue")['default']
   Type: typeof import("../../app/features/auth/type")['default']
+  CalendarWidget: typeof import("../../app/features/dashboard/components/CalendarWidget.vue")['default']
+  DashboardHeader: typeof import("../../app/features/dashboard/components/DashboardHeader.vue")['default']
+  MiniCalendar: typeof import("../../app/features/dashboard/components/MiniCalendar.vue")['default']
+  RecentActivity: typeof import("../../app/features/dashboard/components/RecentActivity.vue")['default']
+  ReservationStatusBadge: typeof import("../../app/features/dashboard/components/ReservationStatusBadge.vue")['default']
+  RoomOccupancy: typeof import("../../app/features/dashboard/components/RoomOccupancy.vue")['default']
+  StatCard: typeof import("../../app/features/dashboard/components/StatCard.vue")['default']
+  StatsGrid: typeof import("../../app/features/dashboard/components/StatsGrid.vue")['default']
+  TodoWidget: typeof import("../../app/features/dashboard/components/TodoWidget.vue")['default']
+  UpcomingReservations: typeof import("../../app/features/dashboard/components/UpcomingReservations.vue")['default']
   MarketingCallToAction: typeof import("../../app/features/marketing/components/MarketingCallToAction.vue")['default']
   MarketingDashboardPreview: typeof import("../../app/features/marketing/components/MarketingDashboardPreview.vue")['default']
   MarketingFeatureCard: typeof import("../../app/features/marketing/components/MarketingFeatureCard.vue")['default']
@@ -65,6 +75,16 @@ interface _GlobalComponents {
   LazyReservationSettingsForm: LazyComponent<typeof import("../../app/features/auth/components/ReservationSettingsForm.vue")['default']>
   LazySetPasswordForm: LazyComponent<typeof import("../../app/features/auth/components/SetPasswordForm.vue")['default']>
   LazyType: LazyComponent<typeof import("../../app/features/auth/type")['default']>
+  LazyCalendarWidget: LazyComponent<typeof import("../../app/features/dashboard/components/CalendarWidget.vue")['default']>
+  LazyDashboardHeader: LazyComponent<typeof import("../../app/features/dashboard/components/DashboardHeader.vue")['default']>
+  LazyMiniCalendar: LazyComponent<typeof import("../../app/features/dashboard/components/MiniCalendar.vue")['default']>
+  LazyRecentActivity: LazyComponent<typeof import("../../app/features/dashboard/components/RecentActivity.vue")['default']>
+  LazyReservationStatusBadge: LazyComponent<typeof import("../../app/features/dashboard/components/ReservationStatusBadge.vue")['default']>
+  LazyRoomOccupancy: LazyComponent<typeof import("../../app/features/dashboard/components/RoomOccupancy.vue")['default']>
+  LazyStatCard: LazyComponent<typeof import("../../app/features/dashboard/components/StatCard.vue")['default']>
+  LazyStatsGrid: LazyComponent<typeof import("../../app/features/dashboard/components/StatsGrid.vue")['default']>
+  LazyTodoWidget: LazyComponent<typeof import("../../app/features/dashboard/components/TodoWidget.vue")['default']>
+  LazyUpcomingReservations: LazyComponent<typeof import("../../app/features/dashboard/components/UpcomingReservations.vue")['default']>
   LazyMarketingCallToAction: LazyComponent<typeof import("../../app/features/marketing/components/MarketingCallToAction.vue")['default']>
   LazyMarketingDashboardPreview: LazyComponent<typeof import("../../app/features/marketing/components/MarketingDashboardPreview.vue")['default']>
   LazyMarketingFeatureCard: LazyComponent<typeof import("../../app/features/marketing/components/MarketingFeatureCard.vue")['default']>
