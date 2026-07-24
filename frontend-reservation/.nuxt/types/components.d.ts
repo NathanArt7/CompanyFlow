@@ -42,6 +42,12 @@ interface _GlobalComponents {
   MarketingNavbar: typeof import("../../app/features/marketing/components/MarketingNavbar.vue")['default']
   MarketingOnboardingStep: typeof import("../../app/features/marketing/components/MarketingOnboardingStep.vue")['default']
   MarketingOnboardingSteps: typeof import("../../app/features/marketing/components/MarketingOnboardingSteps.vue")['default']
+  DailySummary: typeof import("../../app/features/reservations/components/DailySummary.vue")['default']
+  ReservationRow: typeof import("../../app/features/reservations/components/ReservationRow.vue")['default']
+  ReservationsFilters: typeof import("../../app/features/reservations/components/ReservationsFilters.vue")['default']
+  ReservationsHeader: typeof import("../../app/features/reservations/components/ReservationsHeader.vue")['default']
+  ReservationsTable: typeof import("../../app/features/reservations/components/ReservationsTable.vue")['default']
+  WeekStrip: typeof import("../../app/features/reservations/components/WeekStrip.vue")['default']
   NuxtWelcome: typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']
   NuxtLayout: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
   NuxtErrorBoundary: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -94,6 +100,12 @@ interface _GlobalComponents {
   LazyMarketingNavbar: LazyComponent<typeof import("../../app/features/marketing/components/MarketingNavbar.vue")['default']>
   LazyMarketingOnboardingStep: LazyComponent<typeof import("../../app/features/marketing/components/MarketingOnboardingStep.vue")['default']>
   LazyMarketingOnboardingSteps: LazyComponent<typeof import("../../app/features/marketing/components/MarketingOnboardingSteps.vue")['default']>
+  LazyDailySummary: LazyComponent<typeof import("../../app/features/reservations/components/DailySummary.vue")['default']>
+  LazyReservationRow: LazyComponent<typeof import("../../app/features/reservations/components/ReservationRow.vue")['default']>
+  LazyReservationsFilters: LazyComponent<typeof import("../../app/features/reservations/components/ReservationsFilters.vue")['default']>
+  LazyReservationsHeader: LazyComponent<typeof import("../../app/features/reservations/components/ReservationsHeader.vue")['default']>
+  LazyReservationsTable: LazyComponent<typeof import("../../app/features/reservations/components/ReservationsTable.vue")['default']>
+  LazyWeekStrip: LazyComponent<typeof import("../../app/features/reservations/components/WeekStrip.vue")['default']>
   LazyNuxtWelcome: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
   LazyNuxtLayout: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
   LazyNuxtErrorBoundary: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>
