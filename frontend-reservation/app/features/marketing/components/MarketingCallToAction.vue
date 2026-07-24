@@ -1,0 +1,141 @@
+<template>
+  <section
+    id="cta"
+    class="anchor-section px-6 md:px-10 py-16 md:py-24"
+  >
+    <div
+      class="
+        relative
+        mx-auto
+        max-w-3xl
+        overflow-hidden
+        rounded-2xl
+        md:rounded-3xl
+        border
+        border-primary/30
+        bg-card
+        px-6
+        py-10
+        md:px-8
+        md:py-12
+        text-center
+      "
+    >
+      <!-- Halo -->
+      <div
+        class="
+          absolute
+          left-1/2
+          top-1/2
+          -z-10
+          h-56
+          w-56
+          md:h-80
+          md:w-80
+          -translate-x-1/2
+          -translate-y-1/2
+          rounded-full
+          bg-primary/10
+          blur-2xl
+          md:blur-3xl
+        "
+      />
+
+      <h2
+        class="
+          text-2xl
+          sm:text-3xl
+          md:text-5xl
+          font-bold
+          tracking-tight
+          text-foreground
+          leading-tight
+        "
+      >
+        Prêt à transformer votre organisation ?
+      </h2>
+
+      <p
+        class="
+          mx-auto
+          mt-4
+          md:mt-6
+          max-w-2xl
+          text-base
+          md:text-lg
+          leading-7
+          md:leading-8
+          text-muted
+          px-2
+        "
+      >
+        Rejoignez les entreprises qui utilisent CompanyFlow pour centraliser
+        leurs réservations, leurs équipements et leur collaboration.
+      </p>
+
+      <div
+        class="
+          mt-8
+          md:mt-10
+          flex
+          flex-col
+          items-center
+          justify-center
+          gap-4
+          sm:flex-row
+          w-full
+        "
+      >
+        <NuxtLink
+          to="/signup"
+          class="
+            w-full
+            sm:w-auto
+            rounded-xl
+            bg-primary
+            px-6
+            md:px-8
+            py-3.5
+            md:py-4
+            text-sm
+            md:text-base
+            font-semibold
+            text-white
+            transition-all
+            duration-300
+            hover:bg-primary-hover
+            hover:scale-[1.02]
+          "
+        >
+          Créer mon entreprise gratuitement
+        </NuxtLink>
+
+        <NuxtLink
+          to="/demo"
+          class="
+            text-sm
+            md:text-base
+            font-medium
+            text-muted
+            transition-colors
+            hover:text-foreground
+          "
+        >
+          Voir une démonstration →
+        </NuxtLink>
+      </div>
+
+      <p
+        class="
+          mt-6
+          md:mt-8
+          text-xs
+          md:text-sm
+          text-muted
+        "
+      >
+        Inscription gratuite en moins de 2 minutes.
+      </p>
+    </div>
+  </section>
+</template>
