@@ -60,6 +60,12 @@ interface _GlobalComponents {
   RoomsStats: typeof import("../../app/features/rooms/components/RoomsStats.vue")['default']
   RoomsTable: typeof import("../../app/features/rooms/components/RoomsTable.vue")['default']
   Types: typeof import("../../app/features/rooms/types")['default']
+  RoleBadge: typeof import("../../app/features/users/components/RoleBadge.vue")['default']
+  UserStatusBadge: typeof import("../../app/features/users/components/UserStatusBadge.vue")['default']
+  UsersFilters: typeof import("../../app/features/users/components/UsersFilters.vue")['default']
+  UsersHeader: typeof import("../../app/features/users/components/UsersHeader.vue")['default']
+  UsersStats: typeof import("../../app/features/users/components/UsersStats.vue")['default']
+  UsersTable: typeof import("../../app/features/users/components/UsersTable.vue")['default']
   NuxtWelcome: typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']
   NuxtLayout: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
   NuxtErrorBoundary: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -130,6 +136,12 @@ interface _GlobalComponents {
   LazyRoomsStats: LazyComponent<typeof import("../../app/features/rooms/components/RoomsStats.vue")['default']>
   LazyRoomsTable: LazyComponent<typeof import("../../app/features/rooms/components/RoomsTable.vue")['default']>
   LazyTypes: LazyComponent<typeof import("../../app/features/rooms/types")['default']>
+  LazyRoleBadge: LazyComponent<typeof import("../../app/features/users/components/RoleBadge.vue")['default']>
+  LazyUserStatusBadge: LazyComponent<typeof import("../../app/features/users/components/UserStatusBadge.vue")['default']>
+  LazyUsersFilters: LazyComponent<typeof import("../../app/features/users/components/UsersFilters.vue")['default']>
+  LazyUsersHeader: LazyComponent<typeof import("../../app/features/users/components/UsersHeader.vue")['default']>
+  LazyUsersStats: LazyComponent<typeof import("../../app/features/users/components/UsersStats.vue")['default']>
+  LazyUsersTable: LazyComponent<typeof import("../../app/features/users/components/UsersTable.vue")['default']>
   LazyNuxtWelcome: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
   LazyNuxtLayout: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
   LazyNuxtErrorBoundary: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>
