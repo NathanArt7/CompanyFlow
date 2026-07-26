@@ -33,6 +33,12 @@ export const StatCard: typeof import("../app/features/dashboard/components/StatC
 export const StatsGrid: typeof import("../app/features/dashboard/components/StatsGrid.vue")['default']
 export const TodoWidget: typeof import("../app/features/dashboard/components/TodoWidget.vue")['default']
 export const UpcomingReservations: typeof import("../app/features/dashboard/components/UpcomingReservations.vue")['default']
+export const EquipmentStateBadge: typeof import("../app/features/equipments/components/EquipmentStateBadge.vue")['default']
+export const EquipmentsFilters: typeof import("../app/features/equipments/components/EquipmentsFilters.vue")['default']
+export const EquipmentsHeader: typeof import("../app/features/equipments/components/EquipmentsHeader.vue")['default']
+export const EquipmentsStats: typeof import("../app/features/equipments/components/EquipmentsStats.vue")['default']
+export const EquipmentsTable: typeof import("../app/features/equipments/components/EquipmentsTable.vue")['default']
+export const UsageTypeBadge: typeof import("../app/features/equipments/components/UsageTypeBadge.vue")['default']
 export const MarketingCallToAction: typeof import("../app/features/marketing/components/MarketingCallToAction.vue")['default']
 export const MarketingDashboardPreview: typeof import("../app/features/marketing/components/MarketingDashboardPreview.vue")['default']
 export const MarketingFeatureCard: typeof import("../app/features/marketing/components/MarketingFeatureCard.vue")['default']
@@ -97,6 +103,12 @@ export const LazyStatCard: LazyComponent<typeof import("../app/features/dashboar
 export const LazyStatsGrid: LazyComponent<typeof import("../app/features/dashboard/components/StatsGrid.vue")['default']>
 export const LazyTodoWidget: LazyComponent<typeof import("../app/features/dashboard/components/TodoWidget.vue")['default']>
 export const LazyUpcomingReservations: LazyComponent<typeof import("../app/features/dashboard/components/UpcomingReservations.vue")['default']>
+export const LazyEquipmentStateBadge: LazyComponent<typeof import("../app/features/equipments/components/EquipmentStateBadge.vue")['default']>
+export const LazyEquipmentsFilters: LazyComponent<typeof import("../app/features/equipments/components/EquipmentsFilters.vue")['default']>
+export const LazyEquipmentsHeader: LazyComponent<typeof import("../app/features/equipments/components/EquipmentsHeader.vue")['default']>
+export const LazyEquipmentsStats: LazyComponent<typeof import("../app/features/equipments/components/EquipmentsStats.vue")['default']>
+export const LazyEquipmentsTable: LazyComponent<typeof import("../app/features/equipments/components/EquipmentsTable.vue")['default']>
+export const LazyUsageTypeBadge: LazyComponent<typeof import("../app/features/equipments/components/UsageTypeBadge.vue")['default']>
 export const LazyMarketingCallToAction: LazyComponent<typeof import("../app/features/marketing/components/MarketingCallToAction.vue")['default']>
 export const LazyMarketingDashboardPreview: LazyComponent<typeof import("../app/features/marketing/components/MarketingDashboardPreview.vue")['default']>
 export const LazyMarketingFeatureCard: LazyComponent<typeof import("../app/features/marketing/components/MarketingFeatureCard.vue")['default']>
