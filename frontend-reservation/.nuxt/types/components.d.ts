@@ -23,6 +23,13 @@ interface _GlobalComponents {
   ReservationSettingsForm: typeof import("../../app/features/auth/components/ReservationSettingsForm.vue")['default']
   SetPasswordForm: typeof import("../../app/features/auth/components/SetPasswordForm.vue")['default']
   Type: typeof import("../../app/features/auth/type")['default']
+  AvailabilityGrid: typeof import("../../app/features/availability/components/AvailabilityGrid.vue")['default']
+  AvailabilityHeader: typeof import("../../app/features/availability/components/AvailabilityHeader.vue")['default']
+  AvailabilityLegend: typeof import("../../app/features/availability/components/AvailabilityLegend.vue")['default']
+  AvailabilityNav: typeof import("../../app/features/availability/components/AvailabilityNav.vue")['default']
+  AvailabilityStats: typeof import("../../app/features/availability/components/AvailabilityStats.vue")['default']
+  EquipmentAvailabilityGrid: typeof import("../../app/features/availability/components/EquipmentAvailabilityGrid.vue")['default']
+  Types: typeof import("../../app/features/availability/types")['default']
   CalendarWidget: typeof import("../../app/features/dashboard/components/CalendarWidget.vue")['default']
   DashboardHeader: typeof import("../../app/features/dashboard/components/DashboardHeader.vue")['default']
   MiniCalendar: typeof import("../../app/features/dashboard/components/MiniCalendar.vue")['default']
@@ -59,7 +66,6 @@ interface _GlobalComponents {
   RoomsHeader: typeof import("../../app/features/rooms/components/RoomsHeader.vue")['default']
   RoomsStats: typeof import("../../app/features/rooms/components/RoomsStats.vue")['default']
   RoomsTable: typeof import("../../app/features/rooms/components/RoomsTable.vue")['default']
-  Types: typeof import("../../app/features/rooms/types")['default']
   RoleBadge: typeof import("../../app/features/users/components/RoleBadge.vue")['default']
   UserStatusBadge: typeof import("../../app/features/users/components/UserStatusBadge.vue")['default']
   UsersFilters: typeof import("../../app/features/users/components/UsersFilters.vue")['default']
@@ -99,6 +105,13 @@ interface _GlobalComponents {
   LazyReservationSettingsForm: LazyComponent<typeof import("../../app/features/auth/components/ReservationSettingsForm.vue")['default']>
   LazySetPasswordForm: LazyComponent<typeof import("../../app/features/auth/components/SetPasswordForm.vue")['default']>
   LazyType: LazyComponent<typeof import("../../app/features/auth/type")['default']>
+  LazyAvailabilityGrid: LazyComponent<typeof import("../../app/features/availability/components/AvailabilityGrid.vue")['default']>
+  LazyAvailabilityHeader: LazyComponent<typeof import("../../app/features/availability/components/AvailabilityHeader.vue")['default']>
+  LazyAvailabilityLegend: LazyComponent<typeof import("../../app/features/availability/components/AvailabilityLegend.vue")['default']>
+  LazyAvailabilityNav: LazyComponent<typeof import("../../app/features/availability/components/AvailabilityNav.vue")['default']>
+  LazyAvailabilityStats: LazyComponent<typeof import("../../app/features/availability/components/AvailabilityStats.vue")['default']>
+  LazyEquipmentAvailabilityGrid: LazyComponent<typeof import("../../app/features/availability/components/EquipmentAvailabilityGrid.vue")['default']>
+  LazyTypes: LazyComponent<typeof import("../../app/features/availability/types")['default']>
   LazyCalendarWidget: LazyComponent<typeof import("../../app/features/dashboard/components/CalendarWidget.vue")['default']>
   LazyDashboardHeader: LazyComponent<typeof import("../../app/features/dashboard/components/DashboardHeader.vue")['default']>
   LazyMiniCalendar: LazyComponent<typeof import("../../app/features/dashboard/components/MiniCalendar.vue")['default']>
@@ -135,7 +148,6 @@ interface _GlobalComponents {
   LazyRoomsHeader: LazyComponent<typeof import("../../app/features/rooms/components/RoomsHeader.vue")['default']>
   LazyRoomsStats: LazyComponent<typeof import("../../app/features/rooms/components/RoomsStats.vue")['default']>
   LazyRoomsTable: LazyComponent<typeof import("../../app/features/rooms/components/RoomsTable.vue")['default']>
-  LazyTypes: LazyComponent<typeof import("../../app/features/rooms/types")['default']>
   LazyRoleBadge: LazyComponent<typeof import("../../app/features/users/components/RoleBadge.vue")['default']>
   LazyUserStatusBadge: LazyComponent<typeof import("../../app/features/users/components/UserStatusBadge.vue")['default']>
   LazyUsersFilters: LazyComponent<typeof import("../../app/features/users/components/UsersFilters.vue")['default']>
