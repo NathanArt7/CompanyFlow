@@ -17,6 +17,13 @@ type LazyComponent<T> = DefineComponent<HydrationStrategies, {}, {}, {}, {}, {},
 export const AppHeader: typeof import("../app/components/layout/AppHeader.vue")['default']
 export const AppSidebar: typeof import("../app/components/layout/AppSidebar.vue")['default']
 export const Logo: typeof import("../app/components/ui/Logo.vue")['default']
+export const AdminRoleBadge: typeof import("../app/features/administrators/components/AdminRoleBadge.vue")['default']
+export const AdminStatusBadge: typeof import("../app/features/administrators/components/AdminStatusBadge.vue")['default']
+export const AdministratorsFilters: typeof import("../app/features/administrators/components/AdministratorsFilters.vue")['default']
+export const AdministratorsHeader: typeof import("../app/features/administrators/components/AdministratorsHeader.vue")['default']
+export const AdministratorsStats: typeof import("../app/features/administrators/components/AdministratorsStats.vue")['default']
+export const AdministratorsTable: typeof import("../app/features/administrators/components/AdministratorsTable.vue")['default']
+export const Types: typeof import("../app/features/administrators/types")['default']
 export const CreateCompanyForm: typeof import("../app/features/auth/components/CreateCompanyForm.vue")['default']
 export const CreateSuperAdminForm: typeof import("../app/features/auth/components/CreateSuperAdminForm.vue")['default']
 export const LoginForm: typeof import("../app/features/auth/components/LoginForm.vue")['default']
@@ -29,7 +36,6 @@ export const AvailabilityLegend: typeof import("../app/features/availability/com
 export const AvailabilityNav: typeof import("../app/features/availability/components/AvailabilityNav.vue")['default']
 export const AvailabilityStats: typeof import("../app/features/availability/components/AvailabilityStats.vue")['default']
 export const EquipmentAvailabilityGrid: typeof import("../app/features/availability/components/EquipmentAvailabilityGrid.vue")['default']
-export const Types: typeof import("../app/features/availability/types")['default']
 export const CalendarWidget: typeof import("../app/features/dashboard/components/CalendarWidget.vue")['default']
 export const DashboardHeader: typeof import("../app/features/dashboard/components/DashboardHeader.vue")['default']
 export const MiniCalendar: typeof import("../app/features/dashboard/components/MiniCalendar.vue")['default']
@@ -99,6 +105,13 @@ export const NuxtIsland: typeof import("../node_modules/nuxt/dist/app/components
 export const LazyAppHeader: LazyComponent<typeof import("../app/components/layout/AppHeader.vue")['default']>
 export const LazyAppSidebar: LazyComponent<typeof import("../app/components/layout/AppSidebar.vue")['default']>
 export const LazyLogo: LazyComponent<typeof import("../app/components/ui/Logo.vue")['default']>
+export const LazyAdminRoleBadge: LazyComponent<typeof import("../app/features/administrators/components/AdminRoleBadge.vue")['default']>
+export const LazyAdminStatusBadge: LazyComponent<typeof import("../app/features/administrators/components/AdminStatusBadge.vue")['default']>
+export const LazyAdministratorsFilters: LazyComponent<typeof import("../app/features/administrators/components/AdministratorsFilters.vue")['default']>
+export const LazyAdministratorsHeader: LazyComponent<typeof import("../app/features/administrators/components/AdministratorsHeader.vue")['default']>
+export const LazyAdministratorsStats: LazyComponent<typeof import("../app/features/administrators/components/AdministratorsStats.vue")['default']>
+export const LazyAdministratorsTable: LazyComponent<typeof import("../app/features/administrators/components/AdministratorsTable.vue")['default']>
+export const LazyTypes: LazyComponent<typeof import("../app/features/administrators/types")['default']>
 export const LazyCreateCompanyForm: LazyComponent<typeof import("../app/features/auth/components/CreateCompanyForm.vue")['default']>
 export const LazyCreateSuperAdminForm: LazyComponent<typeof import("../app/features/auth/components/CreateSuperAdminForm.vue")['default']>
 export const LazyLoginForm: LazyComponent<typeof import("../app/features/auth/components/LoginForm.vue")['default']>
@@ -111,7 +124,6 @@ export const LazyAvailabilityLegend: LazyComponent<typeof import("../app/feature
 export const LazyAvailabilityNav: LazyComponent<typeof import("../app/features/availability/components/AvailabilityNav.vue")['default']>
 export const LazyAvailabilityStats: LazyComponent<typeof import("../app/features/availability/components/AvailabilityStats.vue")['default']>
 export const LazyEquipmentAvailabilityGrid: LazyComponent<typeof import("../app/features/availability/components/EquipmentAvailabilityGrid.vue")['default']>
-export const LazyTypes: LazyComponent<typeof import("../app/features/availability/types")['default']>
 export const LazyCalendarWidget: LazyComponent<typeof import("../app/features/dashboard/components/CalendarWidget.vue")['default']>
 export const LazyDashboardHeader: LazyComponent<typeof import("../app/features/dashboard/components/DashboardHeader.vue")['default']>
 export const LazyMiniCalendar: LazyComponent<typeof import("../app/features/dashboard/components/MiniCalendar.vue")['default']>

@@ -17,6 +17,13 @@ interface _GlobalComponents {
   AppHeader: typeof import("../../app/components/layout/AppHeader.vue")['default']
   AppSidebar: typeof import("../../app/components/layout/AppSidebar.vue")['default']
   Logo: typeof import("../../app/components/ui/Logo.vue")['default']
+  AdminRoleBadge: typeof import("../../app/features/administrators/components/AdminRoleBadge.vue")['default']
+  AdminStatusBadge: typeof import("../../app/features/administrators/components/AdminStatusBadge.vue")['default']
+  AdministratorsFilters: typeof import("../../app/features/administrators/components/AdministratorsFilters.vue")['default']
+  AdministratorsHeader: typeof import("../../app/features/administrators/components/AdministratorsHeader.vue")['default']
+  AdministratorsStats: typeof import("../../app/features/administrators/components/AdministratorsStats.vue")['default']
+  AdministratorsTable: typeof import("../../app/features/administrators/components/AdministratorsTable.vue")['default']
+  Types: typeof import("../../app/features/administrators/types")['default']
   CreateCompanyForm: typeof import("../../app/features/auth/components/CreateCompanyForm.vue")['default']
   CreateSuperAdminForm: typeof import("../../app/features/auth/components/CreateSuperAdminForm.vue")['default']
   LoginForm: typeof import("../../app/features/auth/components/LoginForm.vue")['default']
@@ -29,7 +36,6 @@ interface _GlobalComponents {
   AvailabilityNav: typeof import("../../app/features/availability/components/AvailabilityNav.vue")['default']
   AvailabilityStats: typeof import("../../app/features/availability/components/AvailabilityStats.vue")['default']
   EquipmentAvailabilityGrid: typeof import("../../app/features/availability/components/EquipmentAvailabilityGrid.vue")['default']
-  Types: typeof import("../../app/features/availability/types")['default']
   CalendarWidget: typeof import("../../app/features/dashboard/components/CalendarWidget.vue")['default']
   DashboardHeader: typeof import("../../app/features/dashboard/components/DashboardHeader.vue")['default']
   MiniCalendar: typeof import("../../app/features/dashboard/components/MiniCalendar.vue")['default']
@@ -99,6 +105,13 @@ interface _GlobalComponents {
   LazyAppHeader: LazyComponent<typeof import("../../app/components/layout/AppHeader.vue")['default']>
   LazyAppSidebar: LazyComponent<typeof import("../../app/components/layout/AppSidebar.vue")['default']>
   LazyLogo: LazyComponent<typeof import("../../app/components/ui/Logo.vue")['default']>
+  LazyAdminRoleBadge: LazyComponent<typeof import("../../app/features/administrators/components/AdminRoleBadge.vue")['default']>
+  LazyAdminStatusBadge: LazyComponent<typeof import("../../app/features/administrators/components/AdminStatusBadge.vue")['default']>
+  LazyAdministratorsFilters: LazyComponent<typeof import("../../app/features/administrators/components/AdministratorsFilters.vue")['default']>
+  LazyAdministratorsHeader: LazyComponent<typeof import("../../app/features/administrators/components/AdministratorsHeader.vue")['default']>
+  LazyAdministratorsStats: LazyComponent<typeof import("../../app/features/administrators/components/AdministratorsStats.vue")['default']>
+  LazyAdministratorsTable: LazyComponent<typeof import("../../app/features/administrators/components/AdministratorsTable.vue")['default']>
+  LazyTypes: LazyComponent<typeof import("../../app/features/administrators/types")['default']>
   LazyCreateCompanyForm: LazyComponent<typeof import("../../app/features/auth/components/CreateCompanyForm.vue")['default']>
   LazyCreateSuperAdminForm: LazyComponent<typeof import("../../app/features/auth/components/CreateSuperAdminForm.vue")['default']>
   LazyLoginForm: LazyComponent<typeof import("../../app/features/auth/components/LoginForm.vue")['default']>
@@ -111,7 +124,6 @@ interface _GlobalComponents {
   LazyAvailabilityNav: LazyComponent<typeof import("../../app/features/availability/components/AvailabilityNav.vue")['default']>
   LazyAvailabilityStats: LazyComponent<typeof import("../../app/features/availability/components/AvailabilityStats.vue")['default']>
   LazyEquipmentAvailabilityGrid: LazyComponent<typeof import("../../app/features/availability/components/EquipmentAvailabilityGrid.vue")['default']>
-  LazyTypes: LazyComponent<typeof import("../../app/features/availability/types")['default']>
   LazyCalendarWidget: LazyComponent<typeof import("../../app/features/dashboard/components/CalendarWidget.vue")['default']>
   LazyDashboardHeader: LazyComponent<typeof import("../../app/features/dashboard/components/DashboardHeader.vue")['default']>
   LazyMiniCalendar: LazyComponent<typeof import("../../app/features/dashboard/components/MiniCalendar.vue")['default']>
