@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\EquipmentCategoryController;
 use App\Http\Controllers\Api\EquipmentController;
 use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\AvailabilityController;
+use App\Http\Controllers\Api\ReservationSettingController;
+use App\Http\Controllers\Api\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -233,6 +235,29 @@ Route::put(
         Route::get(
             '/equipments',
             'availableEquipments'
+        );
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('dashboard')
+    ->controller(DashboardController::class)
+    ->middleware('permission:voir_dashboard_global')
+    ->group(function () {
+
+        Route::get(
+            '/stats',
+            'stats'
+        );
+
+        Route::get(
+            '/alerts',
+            'alerts'
         );
 
     });

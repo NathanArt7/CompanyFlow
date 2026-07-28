@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CancelReservationRequest;
+use App\Http\Requests\FilterReservationRequest;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
 use App\Models\Reservation;
@@ -22,13 +23,13 @@ class ReservationController extends Controller
      * Liste des réservations.
      */
     public function index(
-        Request $request
+        FilterReservationRequest $request
     ): JsonResponse {
 
         $reservations =
             $this->reservationService
                 ->getReservations(
-                    $request->all(),
+                    $request->validated(),
                     $request->user()
                 );
 

@@ -355,17 +355,42 @@ public function getReservations(
 
     }
 
+    if (! empty($filters['from_date'])) {
+
+        $query->where(
+            'date_reservation',
+            '>=',
+            $filters['from_date']
+        );
+
+    }
+
+    if (! empty($filters['status'])) {
+
+        $query->where(
+            'statut',
+            $filters['status']
+        );
+
+    }
+
+    $direction = $filters['direction'] ?? 'desc';
+
     return $query
 
-        ->orderByDesc(
-            'date_reservation'
+        ->orderBy(
+            $filters['sort'] ?? 'date_reservation',
+            $direction
         )
 
-        ->orderByDesc(
-            'heure_debut'
+        ->orderBy(
+            'heure_debut',
+            $direction
         )
 
-        ->paginate(20);
+        ->paginate(
+            $filters['per_page'] ?? 20
+        );
 
 }
 
@@ -456,7 +481,7 @@ private function baseQuery(
     return Reservation::query()
 
         ->with([
-            'creator',
+            'user',
             'room',
             'equipments',
             'cancelledBy',
@@ -479,7 +504,7 @@ private function loadReservation(
 
     return $reservation->load([
 
-        'creator',
+        'user',
 
         'room',
 

@@ -745,9 +745,8 @@ private function sendActivationLink(
             $creator
         );
 
-    $activationLink = url(
-        '/api/account-activation/' . $token
-    );
+    $activationLink = rtrim(config('app.frontend_url'), '/')
+        . '/activate/' . $token;
 
     $this->mailService
         ->sendActivationMail(

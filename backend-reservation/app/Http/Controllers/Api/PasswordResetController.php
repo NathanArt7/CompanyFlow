@@ -37,9 +37,8 @@ class PasswordResetController extends Controller
         $token = $this->passwordResetService
             ->generateResetLink($user);
 
-        $resetLink = url(
-            '/api/reset-password/' . $token
-        );
+        $resetLink = rtrim(config('app.frontend_url'), '/')
+            . '/reset-password/' . $token;
 
         $this->mailService
             ->sendPasswordResetMail(

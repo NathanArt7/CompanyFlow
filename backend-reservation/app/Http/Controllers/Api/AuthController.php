@@ -27,6 +27,7 @@ class AuthController extends Controller
    
 
     $user = Auth::user();
+    $user->load('entreprise');
 
     // Supprime les anciens tokens (optionnel)
     $user->tokens()->delete();
@@ -38,11 +39,12 @@ class AuthController extends Controller
         'message' => 'Connexion réussie',
         'token'   => $token,
         'user'    => [
-            'id'       => $user->id,
-            'nom'      => $user->nom,
-            'prenom'   => $user->prenom,
-            'email'    => $user->email,
-            'role_id'  => $user->role_id,
+            'id'                    => $user->id,
+            'nom'                   => $user->nom,
+            'prenom'                => $user->prenom,
+            'email'                 => $user->email,
+            'role_id'               => $user->role_id,
+            'entreprise_configured' => $user->entreprise?->statut?->isActive() ?? false,
         ]
     ]);
 }
@@ -55,17 +57,18 @@ class AuthController extends Controller
 
     public function me(Request $request)
     {
-        $user = $request->user()->load('role');
+        $user = $request->user()->load(['role', 'entreprise']);
         return response()->json([
-            'id'               => $user->id,
-            'nom'              => $user->nom,
-            'prenom'           => $user->prenom,
-            'email'            => $user->email,
-            'role'             => $user->role->nom,
-            'photo'            => $user->photo,
-            'actif'            => $user->actif,
-            'password_changed' => $user->password_changed,
-            'permissions'      => $user->role->permissions->pluck('nom'),
+            'id'                    => $user->id,
+            'nom'                   => $user->nom,
+            'prenom'                => $user->prenom,
+            'email'                 => $user->email,
+            'role'                  => $user->role->nom,
+            'photo'                 => $user->photo,
+            'actif'                 => $user->actif,
+            'password_changed'      => $user->password_changed,
+            'permissions'           => $user->role->permissions->pluck('nom'),
+            'entreprise_configured' => $user->entreprise?->statut?->isActive() ?? false,
         ]);
     }
 

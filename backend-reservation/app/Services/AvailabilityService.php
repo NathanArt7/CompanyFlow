@@ -313,7 +313,7 @@ private function buildWeek(
 private function buildRoomAvailability(
     Room $room,
     ServiceHour $serviceHour,
-    Collection $reservations,
+    \Illuminate\Support\Collection $reservations,
     int $buffer
 ): array {
 
@@ -370,7 +370,7 @@ private function buildRoomAvailability(
  */
 private function buildSlots(
     ServiceHour $serviceHour,
-    Collection $reservations,
+    \Illuminate\Support\Collection $reservations,
     int $buffer
 ): array
 {
@@ -648,7 +648,7 @@ private function groupReservationsByRoomAndDate(
 
             [$reservation->room_id]
 
-            [$reservation->date_reservation]
+            [$reservation->date_reservation->toDateString()]
 
         [] = $reservation;
 
