@@ -23,14 +23,9 @@ const monthLabel = computed(() =>
     .replace(/^./, c => c.toUpperCase())
 )
 
-const dayStatuses: Record<number, DayStatus> = {
-  3: 'reserved',
-  8: 'partial',
-  14: 'reserved',
-  16: 'partial',
-  22: 'reserved',
-  27: 'available',
-}
+// Pas d'agrégat mensuel d'occupation côté backend pour l'instant : la carte reste vide
+// plutôt que d'afficher de fausses statuts par jour.
+const dayStatuses: Record<number, DayStatus> = {}
 
 const calendarDays = computed<CalendarDay[]>(() => {
   const year = viewDate.value.getFullYear()
@@ -152,7 +147,10 @@ const statusDotClass: Record<DayStatus, string> = {
     </div>
 
     <!-- Légende -->
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-5 pt-4 border-t border-border">
+    <div
+      v-if="Object.keys(dayStatuses).length > 0"
+      class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-5 pt-4 border-t border-border"
+    >
       <div class="flex items-center gap-1.5">
         <span class="w-2 h-2 rounded-full bg-primary" />
         <span class="text-muted text-xs">Réservé</span>

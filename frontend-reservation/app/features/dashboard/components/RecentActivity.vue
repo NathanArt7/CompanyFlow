@@ -1,44 +1,19 @@
 <script setup lang="ts">
-import { Calendar, UserPlus, Monitor, Settings } from 'lucide-vue-next'
-import type { ActivityItem } from '../types'
+import type { ActivityItem } from '../type'
 
-const activities: ActivityItem[] = [
-  {
-    icon: Calendar,
-    iconBg: 'bg-primary/15 text-primary-light',
-    title: 'Nouvelle réservation',
-    description: 'Salle de réunion B par Sarah Johnson',
-    time: 'il y a 5 min',
-  },
-  {
-    icon: UserPlus,
-    iconBg: 'bg-blue-500/15 text-blue-400',
-    title: 'Nouvel utilisateur',
-    description: "Thomas Bernard a rejoint l'entreprise",
-    time: 'il y a 25 min',
-  },
-  {
-    icon: Monitor,
-    iconBg: 'bg-purple-500/15 text-purple-400',
-    title: 'Équipement emprunté',
-    description: 'Vidéoprojecteur par Marc Lorem',
-    time: 'il y a 1 h',
-  },
-  {
-    icon: Settings,
-    iconBg: 'bg-orange-500/15 text-orange-400',
-    title: 'Paramètres mis à jour',
-    description: 'Horaires de service modifiés',
-    time: 'il y a 2 h',
-  },
-]
+// Aucun journal d'activité n'existe côté backend pour l'instant (pas de table, pas de package
+// d'audit-log) : ce widget reste vide plutôt que d'afficher de fausses données.
+const activities: ActivityItem[] = []
 </script>
 
 <template>
   <div class="bg-surface border border-border rounded-xl p-4">
     <h2 class="text-foreground font-semibold mb-5">Activité récente</h2>
 
-    <div class="space-y-5">
+    <p v-if="activities.length === 0" class="text-muted text-xs">
+      Aucune activité récente pour le moment.
+    </p>
+    <div v-else class="space-y-5">
       <div
         v-for="(activity, index) in activities"
         :key="index"

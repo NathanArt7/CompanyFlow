@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'marketing' })
+definePageMeta({ layout: 'marketing', middleware: 'auth' })
 
 const router = useRouter()
 

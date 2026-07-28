@@ -1,7 +1,8 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'default' })
+definePageMeta({ layout: 'default', middleware: 'auth' })
 
-const userName = 'Nathan'
+const authStore = useAuthStore()
+const userName = computed(() => authStore.user?.prenom ?? '')
 </script>
 
 <template>

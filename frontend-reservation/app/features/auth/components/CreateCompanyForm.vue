@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { Building2, Building, Phone, MapPin, Globe, UploadCloud, X } from 'lucide-vue-next'
 import { ref } from 'vue'
+import { useCompanyService } from '~/features/onboarding/services/company.service'
+import type { ApiError } from '~/composables/useApi'
+
+const companyService = useCompanyService()
+const companyStore = useCompanyStore()
 
 const form = ref({
   companyName: '',
@@ -20,14 +25,14 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const handleFileSelect = (file: File | undefined) => {
   if (!file) return
 
-  const validTypes = ['image/png', 'image/jpeg', 'image/svg+xml']
+  const validTypes = ['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp']
   if (!validTypes.includes(file.type)) {
-    errorMessage.value = 'Format non supporté. Utilisez PNG, JPG ou SVG.'
+    errorMessage.value = 'Format non supporté. Utilisez PNG, JPG, SVG ou WEBP.'
     return
   }
 
-  if (file.size > 5 * 1024 * 1024) {
-    errorMessage.value = 'Le fichier dépasse 5 Mo.'
+  if (file.size > 2 * 1024 * 1024) {
+    errorMessage.value = 'Le fichier dépasse 2 Mo.'
     return
   }
 
@@ -62,17 +67,24 @@ const handleSubmit = async () => {
 
   isSubmitting.value = true
   try {
-    // À brancher sur ton service API réel, ex:
-    // const payload = new FormData()
-    // payload.append('name', form.value.companyName)
-    // payload.append('phone', form.value.phone)
-    // payload.append('address', form.value.address)
-    // if (form.value.website) payload.append('website', form.value.website)
-    // if (logoFile.value) payload.append('logo', logoFile.value)
-    // await companyService.configure(payload)
-    // → redirige ensuite vers l'étape 2 (ou le dashboard)
+    const payload = new FormData()
+    payload.append('nom', form.value.companyName)
+    payload.append('telephone', form.value.phone)
+    payload.append('adresse', form.value.address)
+    if (form.value.website) payload.append('site_web', form.value.website)
+    if (logoFile.value) payload.append('logo', logoFile.value)
+
+    const response = await companyService.configure(payload)
+    companyStore.setCompany(response.data as { nom?: string, logo?: string })
+
+    await navigateTo('/onboarding/settings')
   } catch (e) {
-    errorMessage.value = 'Une erreur est survenue. Veuillez réessayer.'
+    const apiError = e as ApiError
+    if (apiError.status === 409) {
+      await navigateTo('/dashboard')
+      return
+    }
+    errorMessage.value = apiError.message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {
     isSubmitting.value = false
   }
@@ -200,12 +212,12 @@ const handleSubmit = async () => {
                 Glissez-déposez votre logo ou
                 <span class="text-primary-light font-medium">parcourez</span>
               </p>
-              <p class="text-muted text-xs mt-1">PNG, JPG ou SVG — Max 5 Mo</p>
+              <p class="text-muted text-xs mt-1">PNG, JPG, SVG ou WEBP — Max 2 Mo</p>
 
               <input
                 ref="fileInput"
                 type="file"
-                accept=".png,.jpg,.jpeg,.svg"
+                accept=".png,.jpg,.jpeg,.svg,.webp"
                 class="hidden"
                 @change="onFileInputChange"
               >

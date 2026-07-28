@@ -1,63 +1,50 @@
 <script setup lang="ts">
 import { ChevronDown } from 'lucide-vue-next'
-import { ref, computed } from 'vue'
-import type { UpcomingReservation } from '../types'
+import { ref, computed, onMounted } from 'vue'
+import type { RawReservation, UpcomingReservation } from '../type'
+import { useDashboardService } from '../services/dashboard.service'
 
-const reservations: UpcomingReservation[] = [
-  {
-    id: '1',
-    time: '09:00 - 10:30',
-    room: 'Salle de réunion A',
-    location: 'Bâtiment A, 2ᵉ étage',
-    event: "Réunion d'équipe",
-    organizer: { name: 'Marc Lorem', initials: 'ML' },
-    status: 'confirmed',
-  },
-  {
-    id: '2',
-    time: '11:00 - 12:30',
-    room: 'Salle de réunion B',
-    location: 'Bâtiment A, 2ᵉ étage',
-    event: 'Présentation produit',
-    organizer: { name: 'Sarah Johnson', initials: 'SJ' },
-    status: 'confirmed',
-  },
-  {
-    id: '3',
-    time: '14:00 - 15:30',
-    room: 'Salle de conférence',
-    location: 'Bâtiment B, 1ᵉʳ étage',
-    event: 'Point mensuel',
-    organizer: { name: 'David Tchalla', initials: 'DT' },
-    status: 'confirmed',
-  },
-  {
-    id: '4',
-    time: '16:00 - 17:00',
-    room: 'Salle de réunion C',
-    location: 'Bâtiment A, 3ᵉ étage',
-    event: 'Entretien RH',
-    organizer: { name: 'Amina Mohamed', initials: 'AM' },
-    status: 'pending',
-  },
-  {
-    id: '5',
-    time: '17:30 - 18:30',
-    room: 'Salle de réunion A',
-    location: 'Bâtiment A, 2ᵉ étage',
-    event: 'Brainstorming',
-    organizer: { name: 'Yann Legrand', initials: 'YL' },
-    status: 'confirmed',
-  },
-]
+const dashboardService = useDashboardService()
+const isLoading = ref(true)
+const error = ref<string | null>(null)
+const reservations = ref<UpcomingReservation[]>([])
+
+function mapReservation(r: RawReservation): UpcomingReservation {
+  const prenom = r.user?.prenom ?? ''
+  const nom = r.user?.nom ?? ''
+
+  return {
+    id: String(r.id),
+    time: `${r.heure_debut.slice(0, 5)} - ${r.heure_fin.slice(0, 5)}`,
+    room: r.room?.nom ?? '—',
+    location: r.room?.localisation ?? '',
+    event: r.motif,
+    organizer: {
+      name: `${prenom} ${nom}`.trim(),
+      initials: `${prenom.charAt(0)}${nom.charAt(0)}`.toUpperCase(),
+    },
+    status: r.statut === 'CONFIRMEE' ? 'confirmed' : 'cancelled',
+  }
+}
 
 const visibleCount = ref(5)
-const visibleReservations = computed(() => reservations.slice(0, visibleCount.value))
-const hasMore = computed(() => visibleCount.value < reservations.length)
+const visibleReservations = computed(() => reservations.value.slice(0, visibleCount.value))
+const hasMore = computed(() => visibleCount.value < reservations.value.length)
 
 const showMore = () => {
   visibleCount.value += 5
 }
+
+onMounted(async () => {
+  try {
+    const data = await dashboardService.getUpcomingReservations()
+    reservations.value = data.map(mapReservation)
+  } catch {
+    error.value = 'Impossible de charger les réservations.'
+  } finally {
+    isLoading.value = false
+  }
+})
 </script>
 
 <template>
@@ -72,6 +59,17 @@ const showMore = () => {
       </NuxtLink>
     </div>
 
+    <p v-if="isLoading" class="text-muted text-xs">
+      Chargement…
+    </p>
+    <p v-else-if="error" class="text-red-400 text-xs">
+      {{ error }}
+    </p>
+    <p v-else-if="reservations.length === 0" class="text-muted text-xs">
+      Aucune réservation à venir.
+    </p>
+
+    <template v-else>
     <!-- Tableau desktop -->
     <div class="hidden md:block overflow-x-auto">
       <table class="w-full text-sm">
@@ -144,5 +142,6 @@ const showMore = () => {
       Afficher plus
       <ChevronDown class="w-4 h-4" />
     </button>
+    </template>
   </div>
 </template>

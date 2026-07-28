@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { Layers } from 'lucide-vue-next'
 import { ref } from 'vue'
-import type { CreateSuperAdminPayload } from '../types'
+import { useAuthService } from '../services/auth.service'
+import type { ApiError } from '~/composables/useApi'
+import type { CreateSuperAdminPayload } from '../type'
+
+const authService = useAuthService()
 
 const form = ref<CreateSuperAdminPayload>({
   lastName: '',
@@ -11,6 +15,7 @@ const form = ref<CreateSuperAdminPayload>({
 
 const isSubmitting = ref(false)
 const errorMessage = ref('')
+const isRegistered = ref(false)
 
 const handleSubmit = async () => {
   errorMessage.value = ''
@@ -22,11 +27,10 @@ const handleSubmit = async () => {
 
   isSubmitting.value = true
   try {
-    // À brancher sur ton service API réel, ex:
-    // await authService.registerSuperAdmin(form.value)
-    // → déclenche l'envoi de l'email d'activation côté backend
+    await authService.registerSuperAdmin(form.value)
+    isRegistered.value = true
   } catch (e) {
-    errorMessage.value = 'Une erreur est survenue. Veuillez réessayer.'
+    errorMessage.value = (e as ApiError).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {
     isSubmitting.value = false
   }
@@ -47,19 +51,31 @@ const handleSubmit = async () => {
         <Logo />
         </div>
 
-        <!-- Titre + description -->
-        <h1 class="text-foreground text-2xl md:text-3xl font-bold leading-snug">
-          Créer votre compte Super Administrateur
-        </h1>
-        <p class="text-muted text-sm mt-3 leading-relaxed">
-          Le Super Administrateur est le responsable principal de votre espace
-          CompanyFlow. Ce compte dispose d'un accès complet pour gérer les
-          utilisateurs, les salles, les équipements et les paramètres de
-          l'entreprise.
-        </p>
+        <template v-if="isRegistered">
+          <!-- État succès -->
+          <h1 class="text-foreground text-2xl md:text-3xl font-bold leading-snug">
+            Vérifiez votre boîte mail
+          </h1>
+          <p class="text-muted text-sm mt-3 leading-relaxed">
+            Un e-mail d'activation a été envoyé à <strong class="text-foreground">{{ form.email }}</strong>.
+            Cliquez sur le lien qu'il contient pour définir votre mot de passe et activer votre compte.
+          </p>
+        </template>
 
-        <!-- Formulaire -->
-        <form class="mt-8 space-y-5" @submit.prevent="handleSubmit">
+        <template v-else>
+          <!-- Titre + description -->
+          <h1 class="text-foreground text-2xl md:text-3xl font-bold leading-snug">
+            Créer votre compte Super Administrateur
+          </h1>
+          <p class="text-muted text-sm mt-3 leading-relaxed">
+            Le Super Administrateur est le responsable principal de votre espace
+            CompanyFlow. Ce compte dispose d'un accès complet pour gérer les
+            utilisateurs, les salles, les équipements et les paramètres de
+            l'entreprise.
+          </p>
+
+          <!-- Formulaire -->
+          <form class="mt-8 space-y-5" @submit.prevent="handleSubmit">
           <div>
             <label for="lastName" class="text-foreground text-sm font-medium block mb-2">
               Nom
@@ -110,7 +126,8 @@ const handleSubmit = async () => {
           >
             {{ isSubmitting ? 'Validation en cours...' : 'Valider' }}
           </button>
-        </form>
+          </form>
+        </template>
 
          <!-- Lien de connexion -->
         <p class="text-center text-muted text-sm mt-6">

@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { Calendar, Clock, Timer, Sun, Moon, Check } from 'lucide-vue-next'
 import { ref } from 'vue'
+import { useCompanyService } from '~/features/onboarding/services/company.service'
+import { WEEK_DAYS } from '~/features/onboarding/type'
+import type { ApiError } from '~/composables/useApi'
 
 const emit = defineEmits<{
   back: []
 }>()
+
+const companyService = useCompanyService()
 
 const form = ref({
   openingTime: '08:00',
@@ -35,11 +40,22 @@ const handleSubmit = async () => {
 
   isSubmitting.value = true
   try {
-    // À brancher sur ton service API réel, ex:
-    // await companyService.setReservationSettings(form.value)
-    // → redirige ensuite vers le dashboard
+    await companyService.setReservationSettings({
+      reservation_buffer: form.value.bufferMinutes,
+      service_hours: WEEK_DAYS.map(day => ({
+        day_of_week: day,
+        is_open: true,
+        start_time: form.value.openingTime,
+        end_time: form.value.closingTime,
+      })),
+    })
+
+    await navigateTo('/dashboard')
   } catch (e) {
-    errorMessage.value = 'Une erreur est survenue. Veuillez réessayer.'
+    const apiError = e as ApiError
+    errorMessage.value = apiError.status === 403
+      ? "Vous n'avez pas la permission de configurer ce paramètre."
+      : apiError.message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {
     isSubmitting.value = false
   }

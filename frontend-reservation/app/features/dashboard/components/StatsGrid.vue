@@ -1,41 +1,61 @@
 <script setup lang="ts">
 import { Calendar, DoorOpen, Users, Monitor } from 'lucide-vue-next'
-import type { StatCardData } from '../types'
+import { onMounted, ref } from 'vue'
+import type { StatCardData } from '../type'
+import { useDashboardService } from '../services/dashboard.service'
 
-const stats: StatCardData[] = [
-  {
-    icon: Calendar,
-    iconBg: 'bg-primary',
-    label: "Réservations aujourd'hui",
-    value: 24,
-    trend: { value: '12%', positive: true },
-  },
-  {
-    icon: DoorOpen,
-    iconBg: 'bg-primary/70',
-    label: 'Salles disponibles',
-    value: 15,
-    subtext: 'Sur 28 salles',
-  },
-  {
-    icon: Users,
-    iconBg: 'bg-primary',
-    label: 'Utilisateurs actifs',
-    value: 142,
-    trend: { value: '8%', positive: true },
-  },
-  {
-    icon: Monitor,
-    iconBg: 'bg-primary/70',
-    label: 'Équipements disponibles',
-    value: 78,
-    subtext: 'Sur 120 équipements',
-  },
-]
+const dashboardService = useDashboardService()
+const isLoading = ref(true)
+const error = ref<string | null>(null)
+const stats = ref<StatCardData[]>([])
+
+onMounted(async () => {
+  try {
+    const data = await dashboardService.getStats()
+    stats.value = [
+      {
+        icon: Calendar,
+        iconBg: 'bg-primary',
+        label: "Réservations aujourd'hui",
+        value: data.reservations_today,
+      },
+      {
+        icon: DoorOpen,
+        iconBg: 'bg-primary/70',
+        label: 'Salles disponibles',
+        value: data.rooms.available,
+        subtext: `Sur ${data.rooms.total} salles`,
+      },
+      {
+        icon: Users,
+        iconBg: 'bg-primary',
+        label: 'Utilisateurs actifs',
+        value: data.active_users,
+      },
+      {
+        icon: Monitor,
+        iconBg: 'bg-primary/70',
+        label: 'Équipements disponibles',
+        value: data.equipments.available,
+        subtext: `Sur ${data.equipments.total} équipements`,
+      },
+    ]
+  } catch {
+    error.value = 'Impossible de charger les statistiques.'
+  } finally {
+    isLoading.value = false
+  }
+})
 </script>
 
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <p v-if="isLoading" class="text-muted text-xs">
+    Chargement…
+  </p>
+  <p v-else-if="error" class="text-red-400 text-xs">
+    {{ error }}
+  </p>
+  <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
     <StatCard
       v-for="stat in stats"
       :key="stat.label"

@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { Shield, Lock, Eye, EyeOff } from 'lucide-vue-next'
 import { ref, computed } from 'vue'
+import { useAuthService } from '../services/auth.service'
+import type { ApiError } from '~/composables/useApi'
 
 const props = defineProps<{
   token?: string
 }>()
+
+const authService = useAuthService()
 
 const form = ref({
   password: '',
@@ -34,13 +38,21 @@ const handleSubmit = async () => {
     return
   }
 
+  if (!props.token) {
+    errorMessage.value = 'Lien d\'activation invalide.'
+    return
+  }
+
   isSubmitting.value = true
   try {
-    // À brancher sur ton service API réel, ex:
-    // await authService.setPassword({ token: props.token, password: form.value.password })
-    // → redirige ensuite vers la création de l'entreprise
+    await authService.activateAccount({
+      token: props.token,
+      password: form.value.password,
+      password_confirmation: form.value.confirmPassword,
+    })
+    await navigateTo('/login?activated=1')
   } catch (e) {
-    errorMessage.value = 'Une erreur est survenue. Le lien est peut-être expiré.'
+    errorMessage.value = (e as ApiError).message ?? 'Une erreur est survenue. Le lien est peut-être expiré.'
   } finally {
     isSubmitting.value = false
   }

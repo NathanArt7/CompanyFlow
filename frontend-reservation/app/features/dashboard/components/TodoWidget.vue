@@ -1,44 +1,79 @@
 <script setup lang="ts">
 import { AlertTriangle, Wrench, UserCog, Building2, ChevronRight } from 'lucide-vue-next'
-import type { TodoItem } from '../types'
+import { onMounted, ref } from 'vue'
+import type { TodoItem } from '../type'
+import { useDashboardService } from '../services/dashboard.service'
 
-const todos: TodoItem[] = [
-  {
-    icon: AlertTriangle,
-    iconColor: 'text-orange-500',
-    label: '2 nouveaux tickets créés',
-    actionLabel: 'Voir',
-    to: '/tickets',
-  },
-  {
-    icon: Wrench,
-    iconColor: 'text-blue-400',
-    label: '1 équipement en maintenance',
-    actionLabel: 'Voir',
-    to: '/equipments',
-  },
-  {
-    icon: UserCog,
-    iconColor: 'text-primary-light',
-    label: '1 utilisateur non activé',
-    actionLabel: 'Voir',
-    to: '/users',
-  },
-  {
-    icon: Building2,
-    iconColor: 'text-red-400',
-    label: '2 salles mises en maintenance',
-    actionLabel: 'Voir',
-    to: '/rooms',
-  },
-]
+const dashboardService = useDashboardService()
+const isLoading = ref(true)
+const error = ref<string | null>(null)
+
+// Pas de système de tickets côté backend : cette ligne reste une donnée statique.
+const ticketsTodo: TodoItem = {
+  icon: AlertTriangle,
+  iconColor: 'text-orange-500',
+  label: '2 nouveaux tickets créés',
+  actionLabel: 'Voir',
+  to: '/tickets',
+}
+
+const todos = ref<TodoItem[]>([ticketsTodo])
+
+onMounted(async () => {
+  try {
+    const alerts = await dashboardService.getAlerts()
+    const dynamic: TodoItem[] = []
+
+    if (alerts.equipments_in_maintenance > 0) {
+      dynamic.push({
+        icon: Wrench,
+        iconColor: 'text-blue-400',
+        label: `${alerts.equipments_in_maintenance} équipement${alerts.equipments_in_maintenance > 1 ? 's' : ''} en maintenance`,
+        actionLabel: 'Voir',
+        to: '/equipments',
+      })
+    }
+
+    if (alerts.unactivated_users > 0) {
+      dynamic.push({
+        icon: UserCog,
+        iconColor: 'text-primary-light',
+        label: `${alerts.unactivated_users} utilisateur${alerts.unactivated_users > 1 ? 's' : ''} non activé${alerts.unactivated_users > 1 ? 's' : ''}`,
+        actionLabel: 'Voir',
+        to: '/users',
+      })
+    }
+
+    if (alerts.rooms_in_maintenance > 0) {
+      dynamic.push({
+        icon: Building2,
+        iconColor: 'text-red-400',
+        label: `${alerts.rooms_in_maintenance} salle${alerts.rooms_in_maintenance > 1 ? 's' : ''} en maintenance`,
+        actionLabel: 'Voir',
+        to: '/rooms',
+      })
+    }
+
+    todos.value = [ticketsTodo, ...dynamic]
+  } catch {
+    error.value = 'Impossible de charger les alertes.'
+  } finally {
+    isLoading.value = false
+  }
+})
 </script>
 
 <template>
   <div class="bg-surface border border-border rounded-xl p-4 h-full flex flex-col">
     <h2 class="text-foreground font-semibold text-sm mb-2">À traiter</h2>
 
-    <div class="flex-1 flex flex-col justify-around">
+    <p v-if="isLoading" class="text-muted text-xs">
+      Chargement…
+    </p>
+    <p v-else-if="error" class="text-red-400 text-xs">
+      {{ error }}
+    </p>
+    <div v-else class="flex-1 flex flex-col justify-around">
       <NuxtLink
         v-for="(todo, index) in todos"
         :key="index"

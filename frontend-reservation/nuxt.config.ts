@@ -5,6 +5,12 @@ export default defineNuxtConfig({
     enabled: false,
   },
 
+  runtimeConfig: {
+    public: {
+      apiBase: 'http://localhost:8000/api',
+    },
+  },
+
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',

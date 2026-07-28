@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ReservationStatus } from '../types'
+import type { ReservationStatus } from '../type'
 
 defineProps<{
   status: ReservationStatus

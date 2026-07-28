@@ -93,17 +93,5 @@ const adminLinks = [
       </div>
     </nav>
 
-    <!-- Footer profil -->
-    <div class="border-t border-border p-4">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center shrink-0">
-          <ShieldQuestion class="w-4.5 h-4.5 text-primary-light" />
-        </div>
-        <div v-if="!isCollapsed" class="min-w-0">
-          <p class="text-foreground text-sm font-medium truncate">Super Administrateur</p>
-          <p class="text-muted text-xs truncate">Accès global</p>
-        </div>
-      </div>
-    </div>
   </aside>
 </template>

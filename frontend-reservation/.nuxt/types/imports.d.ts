@@ -163,6 +163,7 @@ declare global {
   const useActiveElement: typeof import('../../node_modules/@vueuse/core').useActiveElement
   const useAnimate: typeof import('../../node_modules/@vueuse/core').useAnimate
   const useAnnouncer: typeof import('../../node_modules/nuxt/dist/app/composables/announcer').useAnnouncer
+  const useApi: typeof import('../../app/composables/useApi').useApi
   const useAppConfig: typeof import('../../node_modules/nuxt/dist/app/config').useAppConfig
   const useArrayDifference: typeof import('../../node_modules/@vueuse/core').useArrayDifference
   const useArrayEvery: typeof import('../../node_modules/@vueuse/core').useArrayEvery
@@ -180,6 +181,7 @@ declare global {
   const useAsyncQueue: typeof import('../../node_modules/@vueuse/core').useAsyncQueue
   const useAsyncState: typeof import('../../node_modules/@vueuse/core').useAsyncState
   const useAttrs: typeof import('vue').useAttrs
+  const useAuthStore: typeof import('../../app/stores/auth.store').useAuthStore
   const useBase64: typeof import('../../node_modules/@vueuse/core').useBase64
   const useBattery: typeof import('../../node_modules/@vueuse/core').useBattery
   const useBluetooth: typeof import('../../node_modules/@vueuse/core').useBluetooth
@@ -191,6 +193,7 @@ declare global {
   const useClipboardItems: typeof import('../../node_modules/@vueuse/core').useClipboardItems
   const useCloned: typeof import('../../node_modules/@vueuse/core').useCloned
   const useColorMode: typeof import('../../node_modules/@vueuse/core').useColorMode
+  const useCompanyStore: typeof import('../../app/stores/company.store').useCompanyStore
   const useConfirmDialog: typeof import('../../node_modules/@vueuse/core').useConfirmDialog
   const useCookie: typeof import('../../node_modules/nuxt/dist/app/composables/cookie').useCookie
   const useCountdown: typeof import('../../node_modules/@vueuse/core').useCountdown
@@ -433,6 +436,9 @@ declare global {
   // @ts-ignore
   export type { PageMeta } from '../../node_modules/nuxt/dist/app/composables/pages'
   import('../../node_modules/nuxt/dist/app/composables/pages')
+  // @ts-ignore
+  export type { ApiError } from '../../app/composables/useApi'
+  import('../../app/composables/useApi')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'
@@ -600,6 +606,7 @@ declare module 'vue' {
     readonly useActiveElement: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useActiveElement']>
     readonly useAnimate: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useAnimate']>
     readonly useAnnouncer: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/announcer')['useAnnouncer']>
+    readonly useApi: UnwrapRef<typeof import('../../app/composables/useApi')['useApi']>
     readonly useAppConfig: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/config')['useAppConfig']>
     readonly useArrayDifference: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useArrayDifference']>
     readonly useArrayEvery: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useArrayEvery']>
@@ -617,6 +624,7 @@ declare module 'vue' {
     readonly useAsyncQueue: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useAsyncQueue']>
     readonly useAsyncState: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useAsyncState']>
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
+    readonly useAuthStore: UnwrapRef<typeof import('../../app/stores/auth.store')['useAuthStore']>
     readonly useBase64: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useBase64']>
     readonly useBattery: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useBattery']>
     readonly useBluetooth: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useBluetooth']>
@@ -628,6 +636,7 @@ declare module 'vue' {
     readonly useClipboardItems: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useClipboardItems']>
     readonly useCloned: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useCloned']>
     readonly useColorMode: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useColorMode']>
+    readonly useCompanyStore: UnwrapRef<typeof import('../../app/stores/company.store')['useCompanyStore']>
     readonly useConfirmDialog: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useConfirmDialog']>
     readonly useCookie: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['useCookie']>
     readonly useCountdown: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useCountdown']>

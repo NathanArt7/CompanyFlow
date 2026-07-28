@@ -26,9 +26,12 @@ export const AdministratorsTable: typeof import("../app/features/administrators/
 export const Types: typeof import("../app/features/administrators/types")['default']
 export const CreateCompanyForm: typeof import("../app/features/auth/components/CreateCompanyForm.vue")['default']
 export const CreateSuperAdminForm: typeof import("../app/features/auth/components/CreateSuperAdminForm.vue")['default']
+export const ForgotPasswordForm: typeof import("../app/features/auth/components/ForgotPasswordForm.vue")['default']
 export const LoginForm: typeof import("../app/features/auth/components/LoginForm.vue")['default']
 export const ReservationSettingsForm: typeof import("../app/features/auth/components/ReservationSettingsForm.vue")['default']
+export const ResetPasswordForm: typeof import("../app/features/auth/components/ResetPasswordForm.vue")['default']
 export const SetPasswordForm: typeof import("../app/features/auth/components/SetPasswordForm.vue")['default']
+export const AuthService: typeof import("../app/features/auth/services/auth.service")['default']
 export const Type: typeof import("../app/features/auth/type")['default']
 export const AvailabilityGrid: typeof import("../app/features/availability/components/AvailabilityGrid.vue")['default']
 export const AvailabilityHeader: typeof import("../app/features/availability/components/AvailabilityHeader.vue")['default']
@@ -46,6 +49,7 @@ export const StatCard: typeof import("../app/features/dashboard/components/StatC
 export const StatsGrid: typeof import("../app/features/dashboard/components/StatsGrid.vue")['default']
 export const TodoWidget: typeof import("../app/features/dashboard/components/TodoWidget.vue")['default']
 export const UpcomingReservations: typeof import("../app/features/dashboard/components/UpcomingReservations.vue")['default']
+export const DashboardService: typeof import("../app/features/dashboard/services/dashboard.service")['default']
 export const EquipmentStateBadge: typeof import("../app/features/equipments/components/EquipmentStateBadge.vue")['default']
 export const EquipmentsFilters: typeof import("../app/features/equipments/components/EquipmentsFilters.vue")['default']
 export const EquipmentsHeader: typeof import("../app/features/equipments/components/EquipmentsHeader.vue")['default']
@@ -61,6 +65,7 @@ export const MarketingHeroSection: typeof import("../app/features/marketing/comp
 export const MarketingNavbar: typeof import("../app/features/marketing/components/MarketingNavbar.vue")['default']
 export const MarketingOnboardingStep: typeof import("../app/features/marketing/components/MarketingOnboardingStep.vue")['default']
 export const MarketingOnboardingSteps: typeof import("../app/features/marketing/components/MarketingOnboardingSteps.vue")['default']
+export const CompanyService: typeof import("../app/features/onboarding/services/company.service")['default']
 export const DailySummary: typeof import("../app/features/reservations/components/DailySummary.vue")['default']
 export const ReservationsFilters: typeof import("../app/features/reservations/components/ReservationsFilters.vue")['default']
 export const ReservationsHeader: typeof import("../app/features/reservations/components/ReservationsHeader.vue")['default']
@@ -72,6 +77,12 @@ export const RoomsFilters: typeof import("../app/features/rooms/components/Rooms
 export const RoomsHeader: typeof import("../app/features/rooms/components/RoomsHeader.vue")['default']
 export const RoomsStats: typeof import("../app/features/rooms/components/RoomsStats.vue")['default']
 export const RoomsTable: typeof import("../app/features/rooms/components/RoomsTable.vue")['default']
+export const BackupCard: typeof import("../app/features/settings/components/BackupCard.vue")['default']
+export const BusinessHoursCard: typeof import("../app/features/settings/components/BusinessHoursCard.vue")['default']
+export const CompanyInfoCard: typeof import("../app/features/settings/components/CompanyInfoCard.vue")['default']
+export const NotificationsCard: typeof import("../app/features/settings/components/NotificationsCard.vue")['default']
+export const SecurityCard: typeof import("../app/features/settings/components/SecurityCard.vue")['default']
+export const SettingsSidebar: typeof import("../app/features/settings/components/SettingsSidebar.vue")['default']
 export const RoleBadge: typeof import("../app/features/users/components/RoleBadge.vue")['default']
 export const UserStatusBadge: typeof import("../app/features/users/components/UserStatusBadge.vue")['default']
 export const UsersFilters: typeof import("../app/features/users/components/UsersFilters.vue")['default']
@@ -114,9 +125,12 @@ export const LazyAdministratorsTable: LazyComponent<typeof import("../app/featur
 export const LazyTypes: LazyComponent<typeof import("../app/features/administrators/types")['default']>
 export const LazyCreateCompanyForm: LazyComponent<typeof import("../app/features/auth/components/CreateCompanyForm.vue")['default']>
 export const LazyCreateSuperAdminForm: LazyComponent<typeof import("../app/features/auth/components/CreateSuperAdminForm.vue")['default']>
+export const LazyForgotPasswordForm: LazyComponent<typeof import("../app/features/auth/components/ForgotPasswordForm.vue")['default']>
 export const LazyLoginForm: LazyComponent<typeof import("../app/features/auth/components/LoginForm.vue")['default']>
 export const LazyReservationSettingsForm: LazyComponent<typeof import("../app/features/auth/components/ReservationSettingsForm.vue")['default']>
+export const LazyResetPasswordForm: LazyComponent<typeof import("../app/features/auth/components/ResetPasswordForm.vue")['default']>
 export const LazySetPasswordForm: LazyComponent<typeof import("../app/features/auth/components/SetPasswordForm.vue")['default']>
+export const LazyAuthService: LazyComponent<typeof import("../app/features/auth/services/auth.service")['default']>
 export const LazyType: LazyComponent<typeof import("../app/features/auth/type")['default']>
 export const LazyAvailabilityGrid: LazyComponent<typeof import("../app/features/availability/components/AvailabilityGrid.vue")['default']>
 export const LazyAvailabilityHeader: LazyComponent<typeof import("../app/features/availability/components/AvailabilityHeader.vue")['default']>
@@ -134,6 +148,7 @@ export const LazyStatCard: LazyComponent<typeof import("../app/features/dashboar
 export const LazyStatsGrid: LazyComponent<typeof import("../app/features/dashboard/components/StatsGrid.vue")['default']>
 export const LazyTodoWidget: LazyComponent<typeof import("../app/features/dashboard/components/TodoWidget.vue")['default']>
 export const LazyUpcomingReservations: LazyComponent<typeof import("../app/features/dashboard/components/UpcomingReservations.vue")['default']>
+export const LazyDashboardService: LazyComponent<typeof import("../app/features/dashboard/services/dashboard.service")['default']>
 export const LazyEquipmentStateBadge: LazyComponent<typeof import("../app/features/equipments/components/EquipmentStateBadge.vue")['default']>
 export const LazyEquipmentsFilters: LazyComponent<typeof import("../app/features/equipments/components/EquipmentsFilters.vue")['default']>
 export const LazyEquipmentsHeader: LazyComponent<typeof import("../app/features/equipments/components/EquipmentsHeader.vue")['default']>
@@ -149,6 +164,7 @@ export const LazyMarketingHeroSection: LazyComponent<typeof import("../app/featu
 export const LazyMarketingNavbar: LazyComponent<typeof import("../app/features/marketing/components/MarketingNavbar.vue")['default']>
 export const LazyMarketingOnboardingStep: LazyComponent<typeof import("../app/features/marketing/components/MarketingOnboardingStep.vue")['default']>
 export const LazyMarketingOnboardingSteps: LazyComponent<typeof import("../app/features/marketing/components/MarketingOnboardingSteps.vue")['default']>
+export const LazyCompanyService: LazyComponent<typeof import("../app/features/onboarding/services/company.service")['default']>
 export const LazyDailySummary: LazyComponent<typeof import("../app/features/reservations/components/DailySummary.vue")['default']>
 export const LazyReservationsFilters: LazyComponent<typeof import("../app/features/reservations/components/ReservationsFilters.vue")['default']>
 export const LazyReservationsHeader: LazyComponent<typeof import("../app/features/reservations/components/ReservationsHeader.vue")['default']>
@@ -160,6 +176,12 @@ export const LazyRoomsFilters: LazyComponent<typeof import("../app/features/room
 export const LazyRoomsHeader: LazyComponent<typeof import("../app/features/rooms/components/RoomsHeader.vue")['default']>
 export const LazyRoomsStats: LazyComponent<typeof import("../app/features/rooms/components/RoomsStats.vue")['default']>
 export const LazyRoomsTable: LazyComponent<typeof import("../app/features/rooms/components/RoomsTable.vue")['default']>
+export const LazyBackupCard: LazyComponent<typeof import("../app/features/settings/components/BackupCard.vue")['default']>
+export const LazyBusinessHoursCard: LazyComponent<typeof import("../app/features/settings/components/BusinessHoursCard.vue")['default']>
+export const LazyCompanyInfoCard: LazyComponent<typeof import("../app/features/settings/components/CompanyInfoCard.vue")['default']>
+export const LazyNotificationsCard: LazyComponent<typeof import("../app/features/settings/components/NotificationsCard.vue")['default']>
+export const LazySecurityCard: LazyComponent<typeof import("../app/features/settings/components/SecurityCard.vue")['default']>
+export const LazySettingsSidebar: LazyComponent<typeof import("../app/features/settings/components/SettingsSidebar.vue")['default']>
 export const LazyRoleBadge: LazyComponent<typeof import("../app/features/users/components/RoleBadge.vue")['default']>
 export const LazyUserStatusBadge: LazyComponent<typeof import("../app/features/users/components/UserStatusBadge.vue")['default']>
 export const LazyUsersFilters: LazyComponent<typeof import("../app/features/users/components/UsersFilters.vue")['default']>

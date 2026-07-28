@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { Layers, Mail, Lock, Eye, EyeOff } from 'lucide-vue-next'
 import { ref } from 'vue'
+import type { ApiError } from '~/composables/useApi'
+
+const authStore = useAuthStore()
 
 const form = ref({
   email: '',
@@ -21,10 +24,11 @@ const handleSubmit = async () => {
 
   isSubmitting.value = true
   try {
-    // À brancher sur ton service API réel, ex:
-    // await authService.login(form.value)
+    await authStore.login(form.value.email, form.value.password)
+    const destination = authStore.user?.entreprise_configured ? '/dashboard' : '/onboarding/company'
+    await navigateTo(destination)
   } catch (e) {
-    errorMessage.value = 'Email ou mot de passe incorrect.'
+    errorMessage.value = (e as ApiError).message ?? 'Email ou mot de passe incorrect.'
   } finally {
     isSubmitting.value = false
   }

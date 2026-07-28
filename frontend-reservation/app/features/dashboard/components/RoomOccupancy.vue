@@ -1,13 +1,31 @@
 <script setup lang="ts">
 import { LineChart } from 'lucide-vue-next'
-import type { RoomOccupancy } from '../types'
+import { onMounted, ref } from 'vue'
+import type { RoomOccupancy } from '../type'
+import { useDashboardService } from '../services/dashboard.service'
 
-const rooms: RoomOccupancy[] = [
-  { name: 'Salle Alpha', percentage: 92 },
-  { name: 'Salle Bêta', percentage: 76 },
-  { name: 'Salle Gamma', percentage: 48 },
-  { name: 'Salle Delta', percentage: 19 },
-]
+const dashboardService = useDashboardService()
+const isLoading = ref(true)
+const error = ref<string | null>(null)
+const rooms = ref<RoomOccupancy[]>([])
+
+onMounted(async () => {
+  try {
+    const today = await dashboardService.getTodayAvailability()
+
+    rooms.value = (today?.salles ?? [])
+      .filter(salle => salle.creneaux.length > 0)
+      .map((salle) => {
+        const total = salle.creneaux.length
+        const occupied = salle.creneaux.filter(c => c.statut === 'OCCUPE').length
+        return { name: salle.nom, percentage: Math.round((occupied / total) * 100) }
+      })
+  } catch {
+    error.value = "Impossible de charger l'occupation des salles."
+  } finally {
+    isLoading.value = false
+  }
+})
 </script>
 
 <template>
@@ -18,9 +36,18 @@ const rooms: RoomOccupancy[] = [
         <LineChart class="w-3.5 h-3.5" />
       </button>
     </div>
-    <p class="text-muted text-xs mb-3">Basé sur les 7 derniers jours</p>
+    <p class="text-muted text-xs mb-3">Aujourd'hui</p>
 
-    <div class="space-y-2">
+    <p v-if="isLoading" class="text-muted text-xs">
+      Chargement…
+    </p>
+    <p v-else-if="error" class="text-red-400 text-xs">
+      {{ error }}
+    </p>
+    <p v-else-if="rooms.length === 0" class="text-muted text-xs">
+      Aucune salle disponible aujourd'hui.
+    </p>
+    <div v-else class="space-y-2">
       <div v-for="room in rooms" :key="room.name">
         <div class="flex items-center justify-between mb-0.5">
           <span class="text-foreground text-xs">{{ room.name }}</span>

@@ -26,9 +26,12 @@ interface _GlobalComponents {
   Types: typeof import("../../app/features/administrators/types")['default']
   CreateCompanyForm: typeof import("../../app/features/auth/components/CreateCompanyForm.vue")['default']
   CreateSuperAdminForm: typeof import("../../app/features/auth/components/CreateSuperAdminForm.vue")['default']
+  ForgotPasswordForm: typeof import("../../app/features/auth/components/ForgotPasswordForm.vue")['default']
   LoginForm: typeof import("../../app/features/auth/components/LoginForm.vue")['default']
   ReservationSettingsForm: typeof import("../../app/features/auth/components/ReservationSettingsForm.vue")['default']
+  ResetPasswordForm: typeof import("../../app/features/auth/components/ResetPasswordForm.vue")['default']
   SetPasswordForm: typeof import("../../app/features/auth/components/SetPasswordForm.vue")['default']
+  AuthService: typeof import("../../app/features/auth/services/auth.service")['default']
   Type: typeof import("../../app/features/auth/type")['default']
   AvailabilityGrid: typeof import("../../app/features/availability/components/AvailabilityGrid.vue")['default']
   AvailabilityHeader: typeof import("../../app/features/availability/components/AvailabilityHeader.vue")['default']
@@ -46,6 +49,7 @@ interface _GlobalComponents {
   StatsGrid: typeof import("../../app/features/dashboard/components/StatsGrid.vue")['default']
   TodoWidget: typeof import("../../app/features/dashboard/components/TodoWidget.vue")['default']
   UpcomingReservations: typeof import("../../app/features/dashboard/components/UpcomingReservations.vue")['default']
+  DashboardService: typeof import("../../app/features/dashboard/services/dashboard.service")['default']
   EquipmentStateBadge: typeof import("../../app/features/equipments/components/EquipmentStateBadge.vue")['default']
   EquipmentsFilters: typeof import("../../app/features/equipments/components/EquipmentsFilters.vue")['default']
   EquipmentsHeader: typeof import("../../app/features/equipments/components/EquipmentsHeader.vue")['default']
@@ -61,6 +65,7 @@ interface _GlobalComponents {
   MarketingNavbar: typeof import("../../app/features/marketing/components/MarketingNavbar.vue")['default']
   MarketingOnboardingStep: typeof import("../../app/features/marketing/components/MarketingOnboardingStep.vue")['default']
   MarketingOnboardingSteps: typeof import("../../app/features/marketing/components/MarketingOnboardingSteps.vue")['default']
+  CompanyService: typeof import("../../app/features/onboarding/services/company.service")['default']
   DailySummary: typeof import("../../app/features/reservations/components/DailySummary.vue")['default']
   ReservationsFilters: typeof import("../../app/features/reservations/components/ReservationsFilters.vue")['default']
   ReservationsHeader: typeof import("../../app/features/reservations/components/ReservationsHeader.vue")['default']
@@ -72,6 +77,12 @@ interface _GlobalComponents {
   RoomsHeader: typeof import("../../app/features/rooms/components/RoomsHeader.vue")['default']
   RoomsStats: typeof import("../../app/features/rooms/components/RoomsStats.vue")['default']
   RoomsTable: typeof import("../../app/features/rooms/components/RoomsTable.vue")['default']
+  BackupCard: typeof import("../../app/features/settings/components/BackupCard.vue")['default']
+  BusinessHoursCard: typeof import("../../app/features/settings/components/BusinessHoursCard.vue")['default']
+  CompanyInfoCard: typeof import("../../app/features/settings/components/CompanyInfoCard.vue")['default']
+  NotificationsCard: typeof import("../../app/features/settings/components/NotificationsCard.vue")['default']
+  SecurityCard: typeof import("../../app/features/settings/components/SecurityCard.vue")['default']
+  SettingsSidebar: typeof import("../../app/features/settings/components/SettingsSidebar.vue")['default']
   RoleBadge: typeof import("../../app/features/users/components/RoleBadge.vue")['default']
   UserStatusBadge: typeof import("../../app/features/users/components/UserStatusBadge.vue")['default']
   UsersFilters: typeof import("../../app/features/users/components/UsersFilters.vue")['default']
@@ -114,9 +125,12 @@ interface _GlobalComponents {
   LazyTypes: LazyComponent<typeof import("../../app/features/administrators/types")['default']>
   LazyCreateCompanyForm: LazyComponent<typeof import("../../app/features/auth/components/CreateCompanyForm.vue")['default']>
   LazyCreateSuperAdminForm: LazyComponent<typeof import("../../app/features/auth/components/CreateSuperAdminForm.vue")['default']>
+  LazyForgotPasswordForm: LazyComponent<typeof import("../../app/features/auth/components/ForgotPasswordForm.vue")['default']>
   LazyLoginForm: LazyComponent<typeof import("../../app/features/auth/components/LoginForm.vue")['default']>
   LazyReservationSettingsForm: LazyComponent<typeof import("../../app/features/auth/components/ReservationSettingsForm.vue")['default']>
+  LazyResetPasswordForm: LazyComponent<typeof import("../../app/features/auth/components/ResetPasswordForm.vue")['default']>
   LazySetPasswordForm: LazyComponent<typeof import("../../app/features/auth/components/SetPasswordForm.vue")['default']>
+  LazyAuthService: LazyComponent<typeof import("../../app/features/auth/services/auth.service")['default']>
   LazyType: LazyComponent<typeof import("../../app/features/auth/type")['default']>
   LazyAvailabilityGrid: LazyComponent<typeof import("../../app/features/availability/components/AvailabilityGrid.vue")['default']>
   LazyAvailabilityHeader: LazyComponent<typeof import("../../app/features/availability/components/AvailabilityHeader.vue")['default']>
@@ -134,6 +148,7 @@ interface _GlobalComponents {
   LazyStatsGrid: LazyComponent<typeof import("../../app/features/dashboard/components/StatsGrid.vue")['default']>
   LazyTodoWidget: LazyComponent<typeof import("../../app/features/dashboard/components/TodoWidget.vue")['default']>
   LazyUpcomingReservations: LazyComponent<typeof import("../../app/features/dashboard/components/UpcomingReservations.vue")['default']>
+  LazyDashboardService: LazyComponent<typeof import("../../app/features/dashboard/services/dashboard.service")['default']>
   LazyEquipmentStateBadge: LazyComponent<typeof import("../../app/features/equipments/components/EquipmentStateBadge.vue")['default']>
   LazyEquipmentsFilters: LazyComponent<typeof import("../../app/features/equipments/components/EquipmentsFilters.vue")['default']>
   LazyEquipmentsHeader: LazyComponent<typeof import("../../app/features/equipments/components/EquipmentsHeader.vue")['default']>
@@ -149,6 +164,7 @@ interface _GlobalComponents {
   LazyMarketingNavbar: LazyComponent<typeof import("../../app/features/marketing/components/MarketingNavbar.vue")['default']>
   LazyMarketingOnboardingStep: LazyComponent<typeof import("../../app/features/marketing/components/MarketingOnboardingStep.vue")['default']>
   LazyMarketingOnboardingSteps: LazyComponent<typeof import("../../app/features/marketing/components/MarketingOnboardingSteps.vue")['default']>
+  LazyCompanyService: LazyComponent<typeof import("../../app/features/onboarding/services/company.service")['default']>
   LazyDailySummary: LazyComponent<typeof import("../../app/features/reservations/components/DailySummary.vue")['default']>
   LazyReservationsFilters: LazyComponent<typeof import("../../app/features/reservations/components/ReservationsFilters.vue")['default']>
   LazyReservationsHeader: LazyComponent<typeof import("../../app/features/reservations/components/ReservationsHeader.vue")['default']>
@@ -160,6 +176,12 @@ interface _GlobalComponents {
   LazyRoomsHeader: LazyComponent<typeof import("../../app/features/rooms/components/RoomsHeader.vue")['default']>
   LazyRoomsStats: LazyComponent<typeof import("../../app/features/rooms/components/RoomsStats.vue")['default']>
   LazyRoomsTable: LazyComponent<typeof import("../../app/features/rooms/components/RoomsTable.vue")['default']>
+  LazyBackupCard: LazyComponent<typeof import("../../app/features/settings/components/BackupCard.vue")['default']>
+  LazyBusinessHoursCard: LazyComponent<typeof import("../../app/features/settings/components/BusinessHoursCard.vue")['default']>
+  LazyCompanyInfoCard: LazyComponent<typeof import("../../app/features/settings/components/CompanyInfoCard.vue")['default']>
+  LazyNotificationsCard: LazyComponent<typeof import("../../app/features/settings/components/NotificationsCard.vue")['default']>
+  LazySecurityCard: LazyComponent<typeof import("../../app/features/settings/components/SecurityCard.vue")['default']>
+  LazySettingsSidebar: LazyComponent<typeof import("../../app/features/settings/components/SettingsSidebar.vue")['default']>
   LazyRoleBadge: LazyComponent<typeof import("../../app/features/users/components/RoleBadge.vue")['default']>
   LazyUserStatusBadge: LazyComponent<typeof import("../../app/features/users/components/UserStatusBadge.vue")['default']>
   LazyUsersFilters: LazyComponent<typeof import("../../app/features/users/components/UsersFilters.vue")['default']>
