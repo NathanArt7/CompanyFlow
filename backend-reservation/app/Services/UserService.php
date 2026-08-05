@@ -415,6 +415,16 @@ public function updateUser(
         $connectedUser
     ) {
 
+        $targetUser->loadMissing('role');
+
+        $before = [
+            'le nom' => $targetUser->nom,
+            'le prénom' => $targetUser->prenom,
+            "l'email" => $targetUser->email,
+            'le rôle' => $this->roleLabel($targetUser->role->nom),
+            'la photo' => $targetUser->photo ? 'Personnalisée' : 'Aucune',
+        ];
+
         $this->updatePhoto(
             $data,
             $targetUser
@@ -427,11 +437,23 @@ public function updateUser(
 
         $targetUser = $targetUser->fresh()->load('role');
 
+        $after = [
+            'le nom' => $targetUser->nom,
+            'le prénom' => $targetUser->prenom,
+            "l'email" => $targetUser->email,
+            'le rôle' => $this->roleLabel($targetUser->role->nom),
+            'la photo' => $targetUser->photo ? 'Personnalisée' : 'Aucune',
+        ];
+
+        $changes = $this->activityLogService->describeChanges($before, $after);
+
         $this->activityLogService->log(
             $connectedUser,
             ActivityModule::UTILISATEUR,
             'user.updated',
-            "A modifié les informations de l'utilisateur {$targetUser->prenom} {$targetUser->nom}.",
+            $changes
+                ? "A modifié l'utilisateur {$targetUser->prenom} {$targetUser->nom} : " . implode(', ', $changes) . '.'
+                : "A modifié les informations de l'utilisateur {$targetUser->prenom} {$targetUser->nom}.",
             $targetUser
         );
 
@@ -547,6 +569,22 @@ private function updateUserInformations(
         'photo' => $data['photo'] ?? $targetUser->photo,
 
     ]);
+}
+
+/**
+ * Retourne le libellé affiché pour un rôle (le nom brut en base utilise des
+ * underscores, ex. "Super_Employe", peu lisible dans une phrase).
+ */
+private function roleLabel(string $roleName): string
+{
+    return match ($roleName) {
+        'Super_Administrateur' => 'Super Administrateur',
+        'Administrateur' => 'Administrateur',
+        'Super_Employe' => 'Super Employé',
+        'Employe' => 'Employé',
+        'Technicien' => 'Technicien',
+        default => $roleName,
+    };
 }
 
 /**

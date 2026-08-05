@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EntrepriseStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Entreprise extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'reference',
         'created_by',

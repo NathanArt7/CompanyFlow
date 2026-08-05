@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\Room;
+use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Resources\RoomResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -12,11 +14,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Enums\RoomType;
 use App\Enums\RoomStatus;
 use App\Enums\ActivityLog\ActivityModule;
+use App\Enums\Reservation\ReservationStatus;
+use App\Enums\Reservation\CancellationReason;
+use App\Notifications\ReservationCancelledNotification;
 
 class RoomService
 {
     public function __construct(
-        private ActivityLogService $activityLogService
+        private ActivityLogService $activityLogService,
+        private NotificationService $notificationService
     ) {
     }
 
@@ -305,20 +311,60 @@ public function deleteRoom(Room $room, User $user): JsonResponse
 
     try {
 
-        // TODO:
-        // Empêcher la suppression si la salle possède des réservations.
-
         $nom = $room->nom;
 
-        $room->delete();
+        DB::transaction(function () use ($room, $nom, $user) {
 
-        $this->activityLogService->log(
-            $user,
-            ActivityModule::SALLE,
-            'room.deleted',
-            "A supprimé la salle {$nom}.",
-            $room
-        );
+            // Les réservations futures encore confirmées sur cette salle doivent être
+            // annulées (et leurs organisateurs prévenus) avant de supprimer la salle,
+            // sinon elles resteraient "confirmées" sur une salle qui n'existe plus.
+            $upcomingReservations = Reservation::query()
+                ->where('room_id', $room->id)
+                ->where('statut', ReservationStatus::CONFIRMEE)
+                ->where('date_reservation', '>=', now()->toDateString())
+                ->with(['user', 'room'])
+                ->get();
+
+            foreach ($upcomingReservations as $reservation) {
+
+                $reservation->update([
+                    'statut' => ReservationStatus::ANNULEE,
+                    'cancelled_at' => now(),
+                    'cancelled_by' => $user->id,
+                    'cancellation_reason' => CancellationReason::ROOM_DELETED,
+                ]);
+
+                $this->activityLogService->log(
+                    $user,
+                    ActivityModule::RESERVATION,
+                    'reservation.cancelled',
+                    "A annulé la réservation de la salle {$reservation->room->nom} du {$reservation->date_reservation->format('d/m/Y')} (motif : {$reservation->cancellation_reason->label()}).",
+                    $reservation
+                );
+
+                if ($reservation->user) {
+
+                    $this->notificationService->notify(
+                        $reservation->user,
+                        'reservations',
+                        new ReservationCancelledNotification($reservation)
+                    );
+
+                }
+
+            }
+
+            $room->delete();
+
+            $this->activityLogService->log(
+                $user,
+                ActivityModule::SALLE,
+                'room.deleted',
+                "A supprimé la salle {$nom}.",
+                $room
+            );
+
+        });
 
         return response()->json([
             'message' => 'Salle supprimée avec succès.'

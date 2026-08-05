@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\NotificationPreferenceController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\CronController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,23 +29,30 @@ use App\Http\Controllers\Api\NotificationController;
 Route::post(
     '/entreprises',
     [EntrepriseController::class, 'store']
-);
+)->middleware('throttle:10,1');
 
 Route::get(
     '/account-activation/{token}',
     [ActivationController::class, 'verify']
-);
+)->middleware('throttle:20,1');
 
 Route::post(
     '/account-activation',
     [ActivationController::class, 'activate']
-);
+)->middleware('throttle:10,1');
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 
 Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword'])->middleware('throttle:5,1');;
-Route::get('/reset-password/{token}', [PasswordResetController::class, 'verify']);
-Route::post('/reset-password', [PasswordResetController::class, 'reset']);
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'verify'])->middleware('throttle:20,1');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:10,1');
+
+// Appelée par un cron externe (pas de session utilisateur) : protégée par le secret
+// partagé CRON_SECRET (en-tête X-Cron-Secret) plutôt que par auth:sanctum.
+Route::post(
+    '/cron/reminders',
+    [CronController::class, 'sendReservationReminders']
+)->middleware('throttle:5,1');
 
 
 

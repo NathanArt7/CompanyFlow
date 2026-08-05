@@ -357,15 +357,21 @@ public function createReservation(
     User $connectedUser
 ): Reservation {
 
-    $this->validateReservation(
-        $data,
-        $connectedUser
-    );
-
     return DB::transaction(function () use (
         $data,
         $connectedUser
     ) {
+
+        // La validation (dont la vérification des chevauchements) doit s'exécuter à
+        // l'intérieur de la transaction : reservationQuery() pose un verrou pessimiste
+        // (lockForUpdate) sur les réservations existantes, qui n'est tenu que le temps
+        // de la transaction. L'exécuter avant DB::transaction() laisserait une fenêtre
+        // où deux requêtes concurrentes passent toutes deux la vérification avant que
+        // l'une d'elles n'insère sa réservation (race condition de double réservation).
+        $this->validateReservation(
+            $data,
+            $connectedUser
+        );
 
         $reservation =
             $this->createReservationRecord(
@@ -376,10 +382,6 @@ public function createReservation(
         $this->syncEquipments(
             $reservation,
             $data
-        );
-
-        $this->notifyAdmins(
-            $reservation
         );
 
         $reservation = $this->loadReservation(
@@ -473,7 +475,7 @@ public function getReservations(
 
     if (! empty($filters['date'])) {
 
-        $query->where(
+        $query->whereDate(
             'date_reservation',
             $filters['date']
         );
@@ -543,7 +545,7 @@ private function applyStatusFilter(
 
         $query
             ->where('statut', ReservationStatus::CONFIRMEE)
-            ->where('date_reservation', $now->toDateString())
+            ->whereDate('date_reservation', $now->toDateString())
             ->where('heure_debut', '<=', $now->format('H:i:s'))
             ->where('heure_fin', '>', $now->format('H:i:s'));
 
@@ -562,7 +564,7 @@ private function applyStatusFilter(
                     ->orWhere(function (Builder $query) use ($now) {
 
                         $query
-                            ->where('date_reservation', $now->toDateString())
+                            ->whereDate('date_reservation', $now->toDateString())
                             ->where('heure_fin', '<=', $now->format('H:i:s'));
 
                     });
@@ -584,7 +586,7 @@ private function applyStatusFilter(
                     ->orWhere(function (Builder $query) use ($now) {
 
                         $query
-                            ->where('date_reservation', $now->toDateString())
+                            ->whereDate('date_reservation', $now->toDateString())
                             ->where('heure_debut', '>', $now->format('H:i:s'));
 
                     });
@@ -799,17 +801,19 @@ public function updateReservation(
         $reservation
     );
 
-    $this->validateReservation(
-        $data,
-        $connectedUser,
-        $reservation
-    );
-
     return DB::transaction(function () use (
         $reservation,
         $data,
         $connectedUser
     ) {
+
+        // Cf. createReservation() : la validation doit s'exécuter dans la transaction
+        // pour que le verrou pessimiste posé par reservationQuery() soit effectif.
+        $this->validateReservation(
+            $data,
+            $connectedUser,
+            $reservation
+        );
 
         $this->updateReservationRecord(
             $reservation,
@@ -819,10 +823,6 @@ public function updateReservation(
         $this->syncEquipments(
             $reservation,
             $data
-        );
-
-        $this->notifyAdmins(
-            $reservation
         );
 
         $reservation = $this->loadReservation(
@@ -904,7 +904,12 @@ private function loadReservation(
 }
 
 /**
- * Requête de base des réservations.
+ * Requête de base des réservations, utilisée uniquement pour les vérifications de
+ * chevauchement (salle/utilisateur/matériel). lockForUpdate() : pose un verrou
+ * pessimiste sur les lignes lues, tenu jusqu'à la fin de la transaction englobante
+ * (createReservation()/updateReservation()) pour empêcher deux requêtes concurrentes
+ * de passer toutes deux la vérification avant qu'aucune n'ait encore inséré sa
+ * réservation.
  */
 private function reservationQuery(
     array $data,
@@ -913,7 +918,12 @@ private function reservationQuery(
 
     $query = Reservation::query()
 
-        ->where(
+        // whereDate() (et non where()) : le format réellement stocké pour une colonne
+        // "date" est "Y-m-d H:i:s" (Eloquent sérialise toujours via $dateFormat à
+        // l'écriture, quel que soit le cast de lecture) — une égalité stricte contre
+        // "Y-m-d" ne matche que parce que MySQL tronque une colonne DATE ; whereDate()
+        // compare explicitement la partie date, correct quel que soit le SGBD.
+        ->whereDate(
             'date_reservation',
             $data['date_reservation']
         )
@@ -921,7 +931,9 @@ private function reservationQuery(
         ->where(
             'statut',
             ReservationStatus::CONFIRMEE
-        );
+        )
+
+        ->lockForUpdate();
 
     if ($reservation) {
 
@@ -990,7 +1002,14 @@ private function validateReservation(
 }
 
 /**
- * Retourne la salle concernée.
+ * Retourne la salle concernée. lockForUpdate() : verrouille la ligne pour toute la
+ * durée de la transaction englobante (create/updateReservation), ce que le verrou sur
+ * les réservations existantes (reservationQuery()) ne suffit pas à garantir seul —
+ * s'il n'existe encore aucune réservation conflictuelle en base, il n'y a alors rien à
+ * verrouiller de ce côté et deux requêtes concurrentes pourraient toutes deux insérer
+ * la "première" réservation d'un même créneau. Verrouiller la salle elle-même sérialise
+ * systématiquement toute tentative de réservation sur cette salle, y compris ce cas.
+ * Uniquement appelé depuis validateReservation() (donc toujours dans une transaction).
  */
 private function room(
     int $roomId
@@ -998,7 +1017,7 @@ private function room(
 
     if ($this->room === null) {
 
-        $this->room = Room::findOrFail(
+        $this->room = Room::lockForUpdate()->findOrFail(
             $roomId
         );
 
@@ -1662,22 +1681,6 @@ private function syncEquipments(
             $data['equipments'] ?? []
         );
 
-}
-
-/**
- * Notifie les administrateurs.
- */
-private function notifyAdmins(
-    Reservation $reservation
-): void {
-
-    if (
-        $reservation->equipments()->doesntExist()
-    ) {
-        return;
-    }
-
-    // TODO
 }
 
 /**

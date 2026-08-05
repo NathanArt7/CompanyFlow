@@ -124,4 +124,9 @@ return [
     ],
     'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
 
+    // Secret partagé avec le cron externe (cron-job.org) qui déclenche
+    // POST /api/cron/reminders — cette route est publique, donc protégée par ce
+    // secret plutôt que par une session utilisateur.
+    'cron_secret' => env('CRON_SECRET'),
+
 ];
