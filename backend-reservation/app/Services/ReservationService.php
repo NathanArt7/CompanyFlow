@@ -17,10 +17,20 @@ use App\Models\ServiceHour;
 use App\Enums\Reservation\DayOfWeek;
 use Illuminate\Database\Eloquent\Collection;
 use App\Enums\Reservation\ReservationStatus;
+use App\Enums\Reservation\CancellationReason;
+use App\Enums\Equipment\EmpruntableEquipmentStatus;
+use App\Enums\RoomStatus;
+use App\Enums\ActivityLog\ActivityModule;
+use App\Notifications\ReservationCancelledNotification;
 
 
 class ReservationService
 {
+    public function __construct(
+        private ActivityLogService $activityLogService,
+        private NotificationService $notificationService
+    ) {
+    }
 
 /**
  * Salle concernée par la réservation.
@@ -115,15 +125,19 @@ private function ensureReservationCanBeCancelled(
 
     }
 
-    if (
-        $reservation->statut->isFinished()
-    ) {
+    $end = Carbon::parse(
+        $reservation->date_reservation->toDateString()
+        . ' '
+        . $reservation->heure_fin
+    );
+
+    if ($end->isPast()) {
 
         throw ValidationException::withMessages([
 
             'reservation' => [
 
-                "Une réservation terminée ne peut pas être annulée."
+                "Une réservation déjà passée ne peut pas être annulée."
 
             ],
 
@@ -180,13 +194,86 @@ private function ensureUserCanCancelReservation(
 }
 
 /**
+ * Vérifie que l'utilisateur peut
+ * modifier la réservation.
+ */
+private function ensureUserCanEditReservation(
+    Reservation $reservation,
+    User $connectedUser
+): void {
+
+    if (
+        $reservation->user_id !==
+        $connectedUser->id
+    ) {
+
+        throw new AuthorizationException(
+
+            "Seul le créateur de la réservation peut la modifier."
+
+        );
+
+    }
+
+}
+
+/**
+ * Vérifie que la réservation peut
+ * encore être modifiée.
+ */
+private function ensureReservationIsEditable(
+    Reservation $reservation
+): void {
+
+    if (
+        $reservation->statut->isCancelled()
+    ) {
+
+        throw ValidationException::withMessages([
+
+            'reservation' => [
+
+                "Cette réservation est annulée et ne peut plus être modifiée."
+
+            ],
+
+        ]);
+
+    }
+
+    $end = Carbon::parse(
+        $reservation->date_reservation->toDateString()
+        . ' '
+        . $reservation->heure_fin
+    );
+
+    if ($end->isPast()) {
+
+        throw ValidationException::withMessages([
+
+            'reservation' => [
+
+                "Une réservation déjà passée ne peut plus être modifiée."
+
+            ],
+
+        ]);
+
+    }
+
+}
+
+/**
  * Annule une réservation.
  */
 private function cancelReservationRecord(
     Reservation $reservation,
-    User $connectedUser,
-    string $reason
+    User $connectedUser
 ): void {
+
+    $reason = $reservation->user_id === $connectedUser->id
+        ? CancellationReason::USER_REQUEST
+        : CancellationReason::ADMIN_DECISION;
 
     $reservation->update([
 
@@ -237,17 +324,26 @@ public function cancelReservation(
 
         $this->cancelReservationRecord(
             $reservation,
-            $connectedUser,
-            $data['reason']
+            $connectedUser
         );
 
         $this->notifyCreator(
             $reservation
         );
 
-        return $this->loadReservation(
+        $reservation = $this->loadReservation(
             $reservation
         );
+
+        $this->activityLogService->log(
+            $connectedUser,
+            ActivityModule::RESERVATION,
+            'reservation.cancelled',
+            "A annulé la réservation de la salle {$reservation->room->nom} du {$reservation->date_reservation->format('d/m/Y')} (motif : {$reservation->cancellation_reason->label()}).",
+            $reservation
+        );
+
+        return $reservation;
 
     });
 
@@ -286,9 +382,19 @@ public function createReservation(
             $reservation
         );
 
-        return $this->loadReservation(
+        $reservation = $this->loadReservation(
             $reservation
         );
+
+        $this->activityLogService->log(
+            $connectedUser,
+            ActivityModule::RESERVATION,
+            'reservation.created',
+            "A créé une réservation pour la salle {$reservation->room->nom} le {$reservation->date_reservation->format('d/m/Y')} de {$reservation->heure_debut} à {$reservation->heure_fin}.",
+            $reservation
+        );
+
+        return $reservation;
 
     });
 
@@ -365,11 +471,38 @@ public function getReservations(
 
     }
 
-    if (! empty($filters['status'])) {
+    if (! empty($filters['date'])) {
 
         $query->where(
-            'statut',
+            'date_reservation',
+            $filters['date']
+        );
+
+    }
+
+    if (! empty($filters['room_id'])) {
+
+        $query->where(
+            'room_id',
+            $filters['room_id']
+        );
+
+    }
+
+    if (! empty($filters['status'])) {
+
+        $this->applyStatusFilter(
+            $query,
             $filters['status']
+        );
+
+    }
+
+    if (! empty($filters['user_id'])) {
+
+        $query->where(
+            'user_id',
+            $filters['user_id']
         );
 
     }
@@ -391,6 +524,225 @@ public function getReservations(
         ->paginate(
             $filters['per_page'] ?? 20
         );
+
+}
+
+/**
+ * Applique le filtre de statut, y compris les statuts
+ * dérivés du temps ("EN_COURS"/"PASSEE") qui ne sont pas
+ * stockés en base mais calculés à partir de la date/heure.
+ */
+private function applyStatusFilter(
+    Builder $query,
+    string $status
+): void {
+
+    $now = Carbon::now();
+
+    if ($status === 'EN_COURS') {
+
+        $query
+            ->where('statut', ReservationStatus::CONFIRMEE)
+            ->where('date_reservation', $now->toDateString())
+            ->where('heure_debut', '<=', $now->format('H:i:s'))
+            ->where('heure_fin', '>', $now->format('H:i:s'));
+
+        return;
+
+    }
+
+    if ($status === 'PASSEE') {
+
+        $query
+            ->where('statut', ReservationStatus::CONFIRMEE)
+            ->where(function (Builder $query) use ($now) {
+
+                $query
+                    ->where('date_reservation', '<', $now->toDateString())
+                    ->orWhere(function (Builder $query) use ($now) {
+
+                        $query
+                            ->where('date_reservation', $now->toDateString())
+                            ->where('heure_fin', '<=', $now->format('H:i:s'));
+
+                    });
+
+            });
+
+        return;
+
+    }
+
+    if ($status === ReservationStatus::CONFIRMEE->value) {
+
+        $query
+            ->where('statut', ReservationStatus::CONFIRMEE)
+            ->where(function (Builder $query) use ($now) {
+
+                $query
+                    ->where('date_reservation', '>', $now->toDateString())
+                    ->orWhere(function (Builder $query) use ($now) {
+
+                        $query
+                            ->where('date_reservation', $now->toDateString())
+                            ->where('heure_debut', '>', $now->format('H:i:s'));
+
+                    });
+
+            });
+
+        return;
+
+    }
+
+    $query->where('statut', $status);
+
+}
+
+/**
+ * Retourne le nombre de réservations
+ * par jour sur une période.
+ */
+public function getReservationCounts(
+    array $filters,
+    User $connectedUser
+): array {
+
+    $rows = Reservation::query()
+
+        ->where(
+            'entreprise_id',
+            $connectedUser->entreprise_id
+        )
+
+        ->when(
+            ! $connectedUser->hasPermission('consulter_toutes_reservations'),
+            fn (Builder $query) => $query->where('user_id', $connectedUser->id)
+        )
+
+        ->whereBetween(
+            'date_reservation',
+            [
+                $filters['from'],
+                $filters['to'],
+            ]
+        )
+
+        ->selectRaw(
+            'date_reservation, count(*) as total'
+        )
+
+        ->groupBy(
+            'date_reservation'
+        )
+
+        ->get();
+
+    $counts = [];
+
+    foreach ($rows as $row) {
+
+        $counts[
+            Carbon::parse($row->date_reservation)->toDateString()
+        ] = (int) $row->total;
+
+    }
+
+    return $counts;
+
+}
+
+/**
+ * Retourne le résumé des réservations
+ * d'une journée.
+ */
+public function getDailySummary(
+    string $date,
+    User $connectedUser
+): array {
+
+    $entrepriseId = $connectedUser->entreprise_id;
+
+    $reservations = Reservation::query()
+
+        ->where(
+            'entreprise_id',
+            $entrepriseId
+        )
+
+        ->when(
+            ! $connectedUser->hasPermission('consulter_toutes_reservations'),
+            fn (Builder $query) => $query->where('user_id', $connectedUser->id)
+        )
+
+        ->where(
+            'date_reservation',
+            $date
+        )
+
+        ->withCount('equipments')
+
+        ->get();
+
+    $total = $reservations->count();
+
+    $cancelled = $reservations
+
+        ->where(
+            'statut',
+            ReservationStatus::ANNULEE
+        )
+
+        ->count();
+
+    $confirmed = $total - $cancelled;
+
+    $confirmedReservations = $reservations
+
+        ->where(
+            'statut',
+            ReservationStatus::CONFIRMEE
+        );
+
+    $roomsOccupied = $confirmedReservations
+
+        ->pluck('room_id')
+
+        ->unique()
+
+        ->count();
+
+    $equipmentsReserved = (int) $confirmedReservations
+
+        ->sum('equipments_count');
+
+    $equipmentsTotal = Equipment::query()
+
+        ->where(
+            'entreprise_id',
+            $entrepriseId
+        )
+
+        ->count();
+
+    return [
+
+        'date' => $date,
+
+        'reservations' => [
+            'total' => $total,
+            'confirmed' => $confirmed,
+            'cancelled' => $cancelled,
+        ],
+
+        'rooms_occupied' => $roomsOccupied,
+
+        'equipments' => [
+            'reserved' => $equipmentsReserved,
+            'total' => $equipmentsTotal,
+        ],
+
+    ];
 
 }
 
@@ -438,6 +790,15 @@ public function updateReservation(
     )
     ->firstOrFail();
 
+    $this->ensureUserCanEditReservation(
+        $reservation,
+        $connectedUser
+    );
+
+    $this->ensureReservationIsEditable(
+        $reservation
+    );
+
     $this->validateReservation(
         $data,
         $connectedUser,
@@ -446,7 +807,8 @@ public function updateReservation(
 
     return DB::transaction(function () use (
         $reservation,
-        $data
+        $data,
+        $connectedUser
     ) {
 
         $this->updateReservationRecord(
@@ -463,9 +825,19 @@ public function updateReservation(
             $reservation
         );
 
-        return $this->loadReservation(
+        $reservation = $this->loadReservation(
             $reservation
         );
+
+        $this->activityLogService->log(
+            $connectedUser,
+            ActivityModule::RESERVATION,
+            'reservation.updated',
+            "A modifié la réservation de la salle {$reservation->room->nom} du {$reservation->date_reservation->format('d/m/Y')}.",
+            $reservation
+        );
+
+        return $reservation;
 
     });
 
@@ -478,7 +850,7 @@ private function baseQuery(
     User $connectedUser
 ): Builder {
 
-    return Reservation::query()
+    $query = Reservation::query()
 
         ->with([
             'user',
@@ -491,6 +863,21 @@ private function baseQuery(
             'entreprise_id',
             $connectedUser->entreprise_id
         );
+
+    if (
+        ! $connectedUser->hasPermission(
+            'consulter_toutes_reservations'
+        )
+    ) {
+
+        $query->where(
+            'user_id',
+            $connectedUser->id
+        );
+
+    }
+
+    return $query;
 
 }
 
@@ -529,6 +916,11 @@ private function reservationQuery(
         ->where(
             'date_reservation',
             $data['date_reservation']
+        )
+
+        ->where(
+            'statut',
+            ReservationStatus::CONFIRMEE
         );
 
     if ($reservation) {
@@ -561,6 +953,10 @@ private function validateReservation(
 
     $this->ensureRoomBelongsToEntreprise(
         $connectedUser,
+        $data
+    );
+
+    $this->ensureRoomIsAvailableForReservation(
         $data
     );
 
@@ -705,6 +1101,34 @@ private function ensureRoomBelongsToEntreprise(
             'room_id' => [
 
                 "La salle sélectionnée n'appartient pas à votre entreprise."
+
+            ],
+
+        ]);
+
+    }
+
+}
+
+/**
+ * Vérifie que la salle est disponible
+ * (ni en maintenance, ni hors service, ni occupée).
+ */
+private function ensureRoomIsAvailableForReservation(
+    array $data
+): void {
+
+    $room = $this->room(
+        $data['room_id']
+    );
+
+    if ($room->statut !== RoomStatus::DISPONIBLE) {
+
+        throw ValidationException::withMessages([
+
+            'room_id' => [
+
+                "Cette salle n'est pas disponible (statut : {$room->statut->label()})."
 
             ],
 
@@ -1162,7 +1586,7 @@ private function ensureEquipments(
         */
 
         if (
-            ! $equipment->etat->isAvailable()
+            ! EmpruntableEquipmentStatus::from($equipment->etat)->isAvailable()
         ) {
 
             throw ValidationException::withMessages([
@@ -1271,6 +1695,14 @@ private function notifyCreator(
         return;
     }
 
-    // TODO
+    if (! $reservation->user) {
+        return;
+    }
+
+    $this->notificationService->notify(
+        $reservation->user,
+        'reservations',
+        new ReservationCancelledNotification($reservation)
+    );
 }
 }

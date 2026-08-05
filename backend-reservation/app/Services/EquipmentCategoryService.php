@@ -11,9 +11,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Enums\ActivityLog\ActivityModule;
 
 class EquipmentCategoryService
 {
+    public function __construct(
+        private ActivityLogService $activityLogService
+    ) {
+    }
+
     /**
  * Crée une catégorie de matériel.
  */
@@ -29,10 +35,20 @@ public function createCategory(array $data, User $connectedUser): EquipmentCateg
         $connectedUser
     ) {
 
-        return $this->createEquipmentCategory(
+        $category = $this->createEquipmentCategory(
             $data,
             $connectedUser
         );
+
+        $this->activityLogService->log(
+            $connectedUser,
+            ActivityModule::EQUIPEMENT,
+            'equipment_category.created',
+            "A créé la catégorie de matériel {$category->nom}.",
+            $category
+        );
+
+        return $category;
 
     });
 }
@@ -234,6 +250,7 @@ private function updateEquipmentCategory(EquipmentCategory $category, array $dat
 private function buildCategoriesQuery(array $filters, User $connectedUser) {
 
     $query = EquipmentCategory::query()
+        ->withCount('equipments')
         ->where(
             'entreprise_id',
             $connectedUser->entreprise_id
@@ -282,7 +299,7 @@ public function getAllCategories(array $filters, User $connectedUser): LengthAwa
     return $this->buildCategoriesQuery(
         $filters,
         $connectedUser
-    )->paginate(50);
+    )->paginate($filters['per_page'] ?? 10);
 
 }
 
@@ -313,13 +330,38 @@ public function updateCategory(EquipmentCategory $category, array $data, User $c
 
     return DB::transaction(function () use (
         $category,
-        $data
+        $data,
+        $connectedUser
     ) {
 
-        return $this->updateEquipmentCategory(
+        $before = [
+            'le nom' => $category->nom,
+            'la description' => $category->description ?? '—',
+        ];
+
+        $category = $this->updateEquipmentCategory(
             $category,
             $data
         );
+
+        $after = [
+            'le nom' => $category->nom,
+            'la description' => $category->description ?? '—',
+        ];
+
+        $changes = $this->activityLogService->describeChanges($before, $after);
+
+        $this->activityLogService->log(
+            $connectedUser,
+            ActivityModule::EQUIPEMENT,
+            'equipment_category.updated',
+            $changes
+                ? "A modifié la catégorie de matériel {$category->nom} : " . implode(', ', $changes) . '.'
+                : "A modifié la catégorie de matériel {$category->nom}.",
+            $category
+        );
+
+        return $category;
 
     });
 
@@ -336,10 +378,21 @@ public function deleteCategory(EquipmentCategory $category, User $connectedUser)
     );
 
     DB::transaction(function () use (
-        $category
+        $category,
+        $connectedUser
     ) {
 
+        $nom = $category->nom;
+
         $category->delete();
+
+        $this->activityLogService->log(
+            $connectedUser,
+            ActivityModule::EQUIPEMENT,
+            'equipment_category.deleted',
+            "A supprimé la catégorie de matériel {$nom}.",
+            $category
+        );
 
     });
 

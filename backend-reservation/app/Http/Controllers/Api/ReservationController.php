@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CancelReservationRequest;
 use App\Http\Requests\FilterReservationRequest;
+use App\Http\Requests\ReservationCountRequest;
+use App\Http\Requests\ReservationSummaryRequest;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
 use App\Models\Reservation;
@@ -36,6 +38,52 @@ class ReservationController extends Controller
         return response()->json(
             $reservations
         );
+
+    }
+
+    /**
+     * Retourne le nombre de réservations
+     * par jour sur une période.
+     */
+    public function counts(
+        ReservationCountRequest $request
+    ): JsonResponse {
+
+        $counts =
+            $this->reservationService
+                ->getReservationCounts(
+                    $request->validated(),
+                    $request->user()
+                );
+
+        return response()->json([
+
+            'data' => $counts,
+
+        ]);
+
+    }
+
+    /**
+     * Retourne le résumé des réservations
+     * d'une journée.
+     */
+    public function summary(
+        ReservationSummaryRequest $request
+    ): JsonResponse {
+
+        $summary =
+            $this->reservationService
+                ->getDailySummary(
+                    $request->validated('date'),
+                    $request->user()
+                );
+
+        return response()->json([
+
+            'data' => $summary,
+
+        ]);
 
     }
 

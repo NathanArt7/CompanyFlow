@@ -4,6 +4,11 @@ namespace App\Http\Requests\Equipment;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Enums\Equipment\EquipmentUsageType;
+use App\Enums\Equipment\EmpruntableEquipmentStatus;
+use App\Enums\Equipment\NonEmpruntableEquipmentStatus;
+use Illuminate\Validation\Validator;
+use Illuminate\Validation\Rule;
 
 class UpdateEquipmentRequest extends FormRequest
 {

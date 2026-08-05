@@ -5,10 +5,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, SoftDeletes;
 
     protected $fillable = [
          'entreprise_id',
@@ -20,14 +21,16 @@ class User extends Authenticatable
         'photo',
         'actif',
         'password_changed',
+        'notification_preferences',
     ];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
-        'actif'            => 'boolean',
-        'password_changed' => 'boolean',
-        'password'         => 'hashed',
+        'actif'                    => 'boolean',
+        'password_changed'         => 'boolean',
+        'password'                 => 'hashed',
+        'notification_preferences' => 'array',
     ];
 
     public function role()

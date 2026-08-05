@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Availability\AvailableEquipmentRequest;
+use App\Http\Requests\Availability\DayReservationsRequest;
 use App\Http\Requests\Availability\WeeklyAvailabilityRequest;
 use App\Services\AvailabilityService;
 use Carbon\Carbon;
@@ -70,5 +71,30 @@ class AvailabilityController extends Controller
 
     }
 
-    
+    /**
+     * Retourne les réservations confirmées
+     * de l'entreprise pour une journée.
+     */
+    public function dayReservations(
+        DayReservationsRequest $request
+    ): JsonResponse {
+
+        $reservations =
+            $this->availabilityService
+                ->getDayReservations(
+
+                    $request->validated('date'),
+
+                    $request->user()
+
+                );
+
+        return response()->json([
+
+            'data' => $reservations,
+
+        ]);
+
+    }
+
 }

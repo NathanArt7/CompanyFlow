@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Equipment;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SearchEquipmentRequest extends FormRequest
 {
@@ -28,6 +29,39 @@ class SearchEquipmentRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:255',
+            ],
+
+            'category_id' => [
+                'nullable',
+                'integer',
+                'exists:equipment_categories,id',
+            ],
+
+            'usage_type' => [
+                'nullable',
+                'string',
+            ],
+
+            'etat' => [
+                'nullable',
+                'string',
+                'max:100',
+            ],
+
+            'per_page' => [
+                'nullable',
+                'integer',
+                'between:1,100',
+            ],
+
+            'sort' => [
+                'nullable',
+                Rule::in(['nom', 'code', 'created_at']),
+            ],
+
+            'direction' => [
+                'nullable',
+                Rule::in(['asc', 'desc']),
             ],
 
         ];

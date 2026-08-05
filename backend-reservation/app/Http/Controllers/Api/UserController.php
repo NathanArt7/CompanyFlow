@@ -49,6 +49,16 @@ public function index(FilterUserRequest $request)
     return UserResource::collection($users);
 }
 /**
+ * Répartition des utilisateurs par rôle.
+ */
+public function stats(Request $request): JsonResponse
+{
+    return response()->json([
+        'data' => $this->userService->getStats($request->user()),
+    ]);
+}
+
+/**
  * Affiche un utilisateur.
  */
 public function show(
@@ -111,6 +121,24 @@ public function resendActivation(
 
     return response()->json([
         'message' => 'Un nouveau lien d’activation a été envoyé.'
+    ]);
+}
+
+/**
+ * Supprime définitivement un utilisateur.
+ */
+public function destroy(
+    Request $request,
+    User $user
+): JsonResponse {
+
+    $this->userService->deleteUser(
+        $request->user(),
+        $user
+    );
+
+    return response()->json([
+        'message' => 'Utilisateur supprimé avec succès.',
     ]);
 }
 }

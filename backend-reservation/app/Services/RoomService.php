@@ -11,9 +11,15 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Enums\RoomType;
 use App\Enums\RoomStatus;
+use App\Enums\ActivityLog\ActivityModule;
 
 class RoomService
 {
+    public function __construct(
+        private ActivityLogService $activityLogService
+    ) {
+    }
+
     /**
      * Création d'une salle.
      */
@@ -33,6 +39,14 @@ class RoomService
     $room = new Room($data);
     $room->entreprise_id = $user->entreprise_id;
     $room->save();
+
+    $this->activityLogService->log(
+        $user,
+        ActivityModule::SALLE,
+        'room.created',
+        "A créé la salle {$room->nom}.",
+        $room
+    );
 
     return response()->json([
         'message' => 'Salle créée avec succès.',
@@ -97,6 +111,62 @@ $rooms = $query->paginate(
 }
 
 /**
+ * Retourne les statistiques des salles.
+ */
+public function getStats(User $user): array
+{
+    $entrepriseId = $user->entreprise_id;
+
+    $total = Room::where(
+        'entreprise_id',
+        $entrepriseId
+    )->count();
+
+    $meetingRooms = Room::where(
+        'entreprise_id',
+        $entrepriseId
+    )
+        ->where('type', RoomType::MEETING)
+        ->count();
+
+    $storageRooms = Room::where(
+        'entreprise_id',
+        $entrepriseId
+    )
+        ->where('type', RoomType::STORAGE)
+        ->count();
+
+    $meetingRoomsOccupied = Room::where(
+        'entreprise_id',
+        $entrepriseId
+    )
+        ->where('type', RoomType::MEETING)
+        ->where('statut', RoomStatus::OCCUPEE)
+        ->count();
+
+    $inMaintenance = Room::where(
+        'entreprise_id',
+        $entrepriseId
+    )
+        ->where('statut', RoomStatus::MAINTENANCE)
+        ->count();
+
+    return [
+
+        'total' => $total,
+
+        'meeting_rooms' => $meetingRooms,
+
+        'storage_rooms' => $storageRooms,
+
+        'meeting_rooms_occupied' => $meetingRoomsOccupied,
+
+        'in_maintenance' => $inMaintenance,
+
+    ];
+}
+
+/**
  * Affiche une salle.
  */
 public function getRoom(Room $room, User $user): RoomResource
@@ -126,8 +196,38 @@ try {
         $data['capacite'] = null;
     }
 
+    $before = [
+        'le nom' => $room->nom,
+        'le type' => $room->type->label(),
+        'la capacité' => $room->capacite ?? '—',
+        'la localisation' => $room->localisation,
+        'la description' => $room->description ?? '—',
+        'le statut' => $room->statut->label(),
+    ];
+
     $room->fill($data);
     $room->save();
+
+    $after = [
+        'le nom' => $room->nom,
+        'le type' => $room->type->label(),
+        'la capacité' => $room->capacite ?? '—',
+        'la localisation' => $room->localisation,
+        'la description' => $room->description ?? '—',
+        'le statut' => $room->statut->label(),
+    ];
+
+    $changes = $this->activityLogService->describeChanges($before, $after);
+
+    $this->activityLogService->log(
+        $user,
+        ActivityModule::SALLE,
+        'room.updated',
+        $changes
+            ? "A modifié la salle {$room->nom} : " . implode(', ', $changes) . '.'
+            : "A modifié la salle {$room->nom}.",
+        $room
+    );
 
     return response()->json([
         'message' => 'Salle mise à jour avec succès.',
@@ -160,8 +260,18 @@ public function updateStatus(Room $room, RoomStatus $status, User $user): JsonRe
 
     try {
 
+        $previousStatus = $room->statut;
+
         $room->statut = $status;
         $room->save();
+
+        $this->activityLogService->log(
+            $user,
+            ActivityModule::SALLE,
+            'room.status_updated',
+            "A changé le statut de la salle {$room->nom} de « {$previousStatus->label()} » à « {$status->label()} ».",
+            $room
+        );
 
         return response()->json([
             'message' => 'Statut de la salle mis à jour avec succès.',
@@ -198,7 +308,17 @@ public function deleteRoom(Room $room, User $user): JsonResponse
         // TODO:
         // Empêcher la suppression si la salle possède des réservations.
 
+        $nom = $room->nom;
+
         $room->delete();
+
+        $this->activityLogService->log(
+            $user,
+            ActivityModule::SALLE,
+            'room.deleted',
+            "A supprimé la salle {$nom}.",
+            $room
+        );
 
         return response()->json([
             'message' => 'Salle supprimée avec succès.'

@@ -42,6 +42,20 @@ public function index(FilterRoomRequest $request)
 }
 
 /**
+ * Statistiques des salles.
+ */
+public function stats(Request $request)
+{
+    return response()->json([
+
+        'data' => $this->roomService->getStats(
+            $request->user()
+        ),
+
+    ]);
+}
+
+/**
 * Détail d'une salle.
 */
 public function show(Request $request, Room $room)

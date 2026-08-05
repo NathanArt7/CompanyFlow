@@ -10,8 +10,10 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use App\Enums\Reservation\DayOfWeek;
+use App\Enums\Reservation\ReservationStatus;
 use App\Enums\Reservation\SlotStatus;
 use App\Enums\RoomStatus;
+use App\Enums\Equipment\EquipmentUsageType;
 use App\Models\ReservationSetting;
 
 class AvailabilityService
@@ -120,6 +122,20 @@ private function getReservedEquipmentIds(
             $data['date_reservation']
         )
 
+        ->where(
+            'statut',
+            ReservationStatus::CONFIRMEE
+        )
+
+        ->when(
+            ! empty($data['exclude_reservation_id']),
+            fn ($query) => $query->where(
+                'id',
+                '!=',
+                $data['exclude_reservation_id']
+            )
+        )
+
         ->where(function ($query) use ($data) {
 
             $query
@@ -161,13 +177,52 @@ private function getReservedEquipmentIds(
 }
     
 /**
+ * Retourne les réservations confirmées d'une journée, pour toute
+ * l'entreprise (jamais restreint à l'utilisateur connecté) : sert
+ * uniquement à visualiser l'occupation réelle des salles/matériels
+ * sur la page Disponibilités, indépendamment de la permission
+ * "consulter_toutes_reservations" qui régit la liste des réservations.
+ */
+public function getDayReservations(
+    string $date,
+    User $connectedUser
+): Collection {
+
+    return Reservation::query()
+
+        ->where(
+            'entreprise_id',
+            $connectedUser->entreprise_id
+        )
+
+        ->where(
+            'date_reservation',
+            $date
+        )
+
+        ->where(
+            'statut',
+            ReservationStatus::CONFIRMEE
+        )
+
+        ->with([
+            'user',
+            'room',
+            'equipments',
+        ])
+
+        ->get();
+
+}
+
+/**
  * Retourne les matériels
  * disponibles pour un créneau.
  */
 public function getAvailableEquipments(
     array $data,
     User $connectedUser
-): Collection {
+): \Illuminate\Support\Collection {
 
     $equipments = Equipment::query()
 
@@ -175,6 +230,18 @@ public function getAvailableEquipments(
             'entreprise_id',
             $connectedUser->entreprise_id
         )
+
+        ->where(
+            'usage_type',
+            EquipmentUsageType::EMPRUNTABLE
+        )
+
+        ->whereNotIn(
+            'etat',
+            ['EN_PANNE', 'EN_MAINTENANCE', 'HORS_SERVICE']
+        )
+
+        ->with('category:id,nom')
 
         ->orderBy('nom')
 
@@ -200,7 +267,11 @@ public function getAvailableEquipments(
 
                 'nom' => $equipment->nom,
 
-                'statut' => $equipment->etat->value,
+                'statut' => $equipment->etat,
+
+                'category_id' => $equipment->category_id,
+
+                'category_nom' => $equipment->category?->nom,
 
                 'disponible' => ! in_array(
 

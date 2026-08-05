@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CancelReservationRequest extends FormRequest
@@ -17,17 +16,12 @@ public function authorize(): bool
 
 /**
  * Règles de validation.
+ *
+ * Le motif d'annulation n'est pas saisi par l'utilisateur : il est déduit
+ * automatiquement (créateur ou administrateur) dans ReservationService.
  */
 public function rules(): array
 {
-    return [
-
-        'reason' => [
-            'required',
-            'string',
-            'max:500',
-        ],
-
-    ];
+    return [];
 }
 }

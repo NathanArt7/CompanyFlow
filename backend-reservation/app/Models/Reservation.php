@@ -30,6 +30,7 @@ class Reservation extends Model
         'statut',
         'cancellation_reason',
         'cancelled_by',
+        'reminder_sent_at',
     ];
 
     /**
@@ -54,23 +55,25 @@ class Reservation extends Model
     }
 
     /**
-     * Salle réservée.
+     * Salle réservée. withTrashed() : une salle supprimée doit rester
+     * consultable dans l'historique des réservations passées.
      */
     public function room(): BelongsTo
     {
         return $this->belongsTo(
             Room::class
-        );
+        )->withTrashed();
     }
 
     /**
-     * Réservataire.
+     * Réservataire. withTrashed() : un utilisateur supprimé doit rester
+     * consultable dans l'historique des réservations passées.
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(
             User::class
-        );
+        )->withTrashed();
     }
 
     /**
@@ -81,7 +84,7 @@ class Reservation extends Model
         return $this->belongsTo(
             User::class,
             'cancelled_by'
-        );
+        )->withTrashed();
     }
 
     /**

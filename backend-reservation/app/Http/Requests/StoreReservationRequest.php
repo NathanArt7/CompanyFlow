@@ -6,6 +6,7 @@ use App\Enums\Reservation\ReservationStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Models\Room;
+use Carbon\Carbon;
 
 class StoreReservationRequest extends FormRequest
 {
@@ -47,6 +48,7 @@ class StoreReservationRequest extends FormRequest
             'date_reservation' => [
                 'required',
                 'date',
+                'after_or_equal:today',
             ],
 
             'heure_debut' => [
@@ -74,6 +76,31 @@ class StoreReservationRequest extends FormRequest
         ];
     }
 
- 
+    /**
+     * Ajoute les règles métier après la validation classique.
+     */
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+
+            if ($validator->errors()->isNotEmpty()) {
+                return;
+            }
+
+            $date = $this->input('date_reservation');
+            $heureDebut = $this->input('heure_debut');
+
+            if (
+                $date === Carbon::now()->toDateString()
+                && $heureDebut < Carbon::now()->format('H:i')
+            ) {
+                $validator->errors()->add(
+                    'heure_debut',
+                    "Le créneau horaire sélectionné est déjà passé."
+                );
+            }
+
+        });
+    }
 
 }

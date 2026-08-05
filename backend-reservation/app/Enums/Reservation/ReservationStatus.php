@@ -45,6 +45,9 @@ public function isCancelled(): bool
 
 public function isFinished(): bool
 {
-    return $this === self::TERMINEE;
+    // Aucun statut "terminée" n'existe dans le modèle de données actuel
+    // (seuls CONFIRMEE et ANNULEE sont possibles) : une réservation n'est
+    // donc jamais considérée comme "finished" par ce système.
+    return false;
 }
 }

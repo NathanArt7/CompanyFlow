@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use App\Enums\Reservation\ReservationStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class FilterReservationRequest extends FormRequest
 {
@@ -29,9 +28,31 @@ class FilterReservationRequest extends FormRequest
                 'date'
             ],
 
+            'date' => [
+                'nullable',
+                'date'
+            ],
+
+            'room_id' => [
+                'nullable',
+                'integer',
+                'exists:rooms,id'
+            ],
+
             'status' => [
                 'nullable',
-                new Enum(ReservationStatus::class)
+                Rule::in([
+                    ReservationStatus::CONFIRMEE->value,
+                    ReservationStatus::ANNULEE->value,
+                    'EN_COURS',
+                    'PASSEE',
+                ]),
+            ],
+
+            'user_id' => [
+                'nullable',
+                'integer',
+                'exists:users,id'
             ],
 
             'per_page' => [

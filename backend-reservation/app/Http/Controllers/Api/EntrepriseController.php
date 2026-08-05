@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\StoreEntrepriseRequest;
 use App\Services\EntrepriseService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateEntrepriseRequest;
 
@@ -49,5 +50,40 @@ public function updateConfiguration(
         'data' => $entreprise,
     ]);
 }
-    
+
+/**
+ * Retourne les informations de l'entreprise connectée.
+ */
+public function show(
+    Request $request
+): JsonResponse {
+
+    return response()->json([
+        'data' => $request->user()->entreprise,
+    ]);
+
+}
+
+/**
+ * Met à jour les informations de l'entreprise
+ * depuis la page Paramètres.
+ */
+public function update(
+    UpdateEntrepriseRequest $request
+): JsonResponse {
+
+    $entreprise = $this->entrepriseService
+        ->updateEntrepriseProfile(
+            $request->user()->entreprise,
+            $request->validated(),
+            $request->file('logo')
+        );
+
+    return response()->json([
+        'message' => 'Informations de l\'entreprise mises à jour avec succès.',
+        'data' => $entreprise,
+    ]);
+
+}
+
 }

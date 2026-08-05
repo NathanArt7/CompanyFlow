@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Equipment\SearchEquipmentRequest;
 use App\Http\Requests\Equipment\StoreEquipmentRequest;
 use App\Http\Requests\Equipment\UpdateEquipmentRequest;
+use App\Http\Requests\Equipment\UpdateEquipmentStatusRequest;
 use App\Http\Resources\EquipmentResource;
 use App\Models\Equipment;
 use App\Services\EquipmentService;
@@ -69,6 +70,23 @@ public function index(
 }
 
 /**
+ * Statistiques des matériels.
+ */
+public function stats(
+    Request $request
+): JsonResponse {
+
+    return response()->json([
+
+        'data' => $this->equipmentService->getStats(
+            $request->user()
+        ),
+
+    ]);
+
+}
+
+/**
  * Retourne un matériel.
  */
 public function show(
@@ -107,6 +125,30 @@ public function update(
 
     return response()->json([
         'message' => 'Matériel mis à jour avec succès.',
+        'equipment' => new EquipmentResource(
+            $equipment
+        ),
+    ]);
+
+}
+
+/**
+ * Met à jour uniquement l'état d'un matériel.
+ */
+public function updateStatus(
+    UpdateEquipmentStatusRequest $request,
+    Equipment $equipment
+): JsonResponse {
+
+    $equipment = $this->equipmentService
+        ->updateEquipmentStatus(
+            $equipment,
+            $request->validated('etat'),
+            $request->user()
+        );
+
+    return response()->json([
+        'message' => "État du matériel mis à jour avec succès.",
         'equipment' => new EquipmentResource(
             $equipment
         ),

@@ -2,12 +2,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateProfileRequest;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class AuthController extends Controller
 {
+  public function __construct(
+      private UserService $userService
+  ) {
+  }
+
   public function login(Request $request)
 {
     $request->validate([
@@ -24,9 +31,20 @@ class AuthController extends Controller
                 'message' => 'Identifiants incorrects.',
             ], 401);
         }
-   
 
     $user = Auth::user();
+
+    if (! $user->actif) {
+
+        Auth::logout();
+
+        return response()->json([
+            'message' => "Votre compte a été désactivé. Contactez votre administrateur pour plus d'informations.",
+            'code' => 'ACCOUNT_DISABLED',
+        ], 403);
+
+    }
+
     $user->load('entreprise');
 
     // Supprime les anciens tokens (optionnel)
@@ -72,9 +90,34 @@ class AuthController extends Controller
         ]);
     }
 
+    public function updateProfile(UpdateProfileRequest $request)
+    {
+        $user = $this->userService->updateOwnProfile(
+            $request->validated(),
+            $request->user()
+        );
+
+        return response()->json([
+            'message' => 'Profil mis à jour avec succès.',
+            'user' => [
+                'id'                    => $user->id,
+                'nom'                   => $user->nom,
+                'prenom'                => $user->prenom,
+                'email'                 => $user->email,
+                'role'                  => $user->role->nom,
+                'photo'                 => $user->photo,
+                'actif'                 => $user->actif,
+                'password_changed'      => $user->password_changed,
+                'permissions'           => $user->role->permissions->pluck('nom'),
+                'entreprise_configured' => $user->entreprise?->statut?->isActive() ?? false,
+            ],
+        ]);
+    }
+
     public function changePassword(Request $request)
     {
         $request->validate([
+            'current_password' => 'required|current_password:sanctum',
             'password' => 'required|string|min:8|confirmed',
         ]);
 

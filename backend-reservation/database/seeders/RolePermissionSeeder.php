@@ -74,6 +74,8 @@ class RolePermissionSeeder extends Seeder
         // ─────────────────────────────────────────────
 
         $admin->permissions()->attach([
+            $permissions['voir_dashboard_global']->id,
+
             $permissions['creer_technicien']->id,
             $permissions['creer_employe']->id,
             $permissions['creer_super_employe']->id,
@@ -98,9 +100,11 @@ class RolePermissionSeeder extends Seeder
             $permissions['modifier_etat_materiel']->id,
 
             $permissions['consulter_toutes_reservations']->id,
+            $permissions['reserver_salle']->id,
             $permissions['valider_reservation']->id,
             $permissions['annuler_reservation']->id,
 
+            $permissions['creer_ticket']->id,
             $permissions['consulter_tous_tickets']->id,
             $permissions['attribuer_ticket']->id,
             $permissions['modifier_priorite_ticket']->id,

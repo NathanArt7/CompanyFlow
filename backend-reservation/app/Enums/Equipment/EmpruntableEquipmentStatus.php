@@ -6,6 +6,10 @@ enum EmpruntableEquipmentStatus: string
 {
     case DISPONIBLE = 'DISPONIBLE';
 
+    case OCCUPE = 'OCCUPE';
+
+    case EN_PANNE = 'EN_PANNE';
+
     case EN_MAINTENANCE = 'EN_MAINTENANCE';
 
     case HORS_SERVICE = 'HORS_SERVICE';

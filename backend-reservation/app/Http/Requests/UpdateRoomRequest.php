@@ -66,4 +66,19 @@ class UpdateRoomRequest extends FormRequest
 
         ];
     }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if (
+                $this->input('type') === RoomType::STORAGE->value
+                && $this->input('statut') === RoomStatus::OCCUPEE->value
+            ) {
+                $validator->errors()->add(
+                    'statut',
+                    'Une salle de stockage ne peut pas avoir le statut "Occupée".'
+                );
+            }
+        });
+    }
 }

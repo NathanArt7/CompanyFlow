@@ -28,6 +28,19 @@ class SearchEquipmentCategoryRequest extends FormRequest
                 'string',
                 'max:255',
             ],
+
+            'page' => [
+                'nullable',
+                'integer',
+                'min:1',
+            ],
+
+            'per_page' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'max:100',
+            ],
         ];
     }
 
@@ -39,6 +52,8 @@ class SearchEquipmentCategoryRequest extends FormRequest
         return [
             'search.string' => 'Le terme de recherche doit être une chaîne de caractères.',
             'search.max' => 'Le terme de recherche ne doit pas dépasser 255 caractères.',
+            'per_page.integer' => 'Le nombre d\'éléments par page doit être un entier.',
+            'per_page.max' => 'Le nombre d\'éléments par page ne doit pas dépasser 100.',
         ];
     }
 }

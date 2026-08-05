@@ -103,6 +103,38 @@ public function configureEntreprise(
 }
 
 /**
+ * Met à jour les informations d'une entreprise déjà active
+ * (page Paramètres, contrairement à la configuration initiale).
+ */
+public function updateEntrepriseProfile(
+    Entreprise $entreprise,
+    array $data,
+    ?UploadedFile $logo
+): Entreprise {
+
+    return DB::transaction(function () use (
+        $entreprise,
+        $data,
+        $logo
+    ) {
+
+        if ($logo) {
+
+            $data['logo'] = $this->storeLogo($logo);
+
+        }
+
+        $this->completeEntrepriseProfile(
+            $entreprise,
+            $data
+        );
+
+        return $entreprise->fresh();
+    });
+
+}
+
+/**
  * Stocke le logo de l'entreprise.
  */
 private function storeLogo(

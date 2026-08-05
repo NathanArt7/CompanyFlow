@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\EntrepriseStatus;
 use App\Enums\PermissionName;
 use App\Enums\RoleName;
+use App\Enums\ActivityLog\ActivityModule;
 use App\Models\Entreprise;
 use App\Models\Role;
 use App\Models\User;
@@ -19,7 +20,8 @@ class UserService
 {
     public function __construct(
         private ActivationService $activationService,
-        private MailService $mailService
+        private MailService $mailService,
+        private ActivityLogService $activityLogService
     ) {
     }
 
@@ -99,6 +101,17 @@ class UserService
                 $user,
                 $creator
             );
+
+            if ($creator) {
+                $this->activityLogService->log(
+                    $creator,
+                    ActivityModule::UTILISATEUR,
+                    'user.created',
+                    "A créé l'utilisateur {$user->prenom} {$user->nom}.",
+                    $user
+                );
+            }
+
             return $user;
         });
     }
@@ -134,6 +147,33 @@ class UserService
         }
 
         return false;
+    }
+
+    /**
+     * Retourne les rôles que l'utilisateur connecté
+     * est autorisé à attribuer (création ou édition).
+     */
+    public function getAssignableRoles(
+        User $connectedUser
+    ): \Illuminate\Support\Collection {
+
+        $this->ensureCanManageUsers($connectedUser);
+
+        return Role::orderBy('nom')
+            ->get()
+            ->filter(function (Role $role) use ($connectedUser) {
+
+                if (! $this->canCreateRole($connectedUser, $role)) {
+                    return false;
+                }
+
+                return $connectedUser->hasPermission(
+                    $this->getRequiredPermission($role)
+                );
+
+            })
+            ->values();
+
     }
 
     /**
@@ -270,6 +310,57 @@ return $query->paginate(
 }
 
 /**
+ * Retourne la répartition des utilisateurs par rôle.
+ */
+public function getStats(
+    User $connectedUser
+): array {
+
+    if (
+        ! $connectedUser->hasRole(RoleName::SUPER_ADMIN->value)
+        && ! $connectedUser->hasRole(RoleName::ADMIN->value)
+    ) {
+        throw new AuthorizationException(
+            "Vous n'êtes pas autorisé à consulter les utilisateurs."
+        );
+    }
+
+    $entrepriseId = $connectedUser->entreprise_id;
+
+    $total = User::where('entreprise_id', $entrepriseId)->count();
+
+    $admins = User::where('entreprise_id', $entrepriseId)
+        ->whereHas('role', function ($query) {
+            $query->whereIn('nom', [
+                RoleName::SUPER_ADMIN->value,
+                RoleName::ADMIN->value,
+            ]);
+        })
+        ->count();
+
+    $superEmployes = User::where('entreprise_id', $entrepriseId)
+        ->whereHas('role', fn ($query) => $query->where('nom', RoleName::SUPER_EMPLOYE->value))
+        ->count();
+
+    $employes = User::where('entreprise_id', $entrepriseId)
+        ->whereHas('role', fn ($query) => $query->where('nom', RoleName::EMPLOYE->value))
+        ->count();
+
+    $techniciens = User::where('entreprise_id', $entrepriseId)
+        ->whereHas('role', fn ($query) => $query->where('nom', RoleName::TECHNICIEN->value))
+        ->count();
+
+    return [
+        'total' => $total,
+        'admins' => $admins,
+        'super_employes' => $superEmployes,
+        'employes' => $employes,
+        'techniciens' => $techniciens,
+    ];
+
+}
+
+/**
  * Retourne un utilisateur.
  */
 public function getUser(
@@ -320,7 +411,8 @@ public function updateUser(
 
     return DB::transaction(function () use (
         $data,
-        $targetUser
+        $targetUser,
+        $connectedUser
     ) {
 
         $this->updatePhoto(
@@ -333,7 +425,17 @@ public function updateUser(
             $targetUser
         );
 
-        return $targetUser->fresh()->load('role');
+        $targetUser = $targetUser->fresh()->load('role');
+
+        $this->activityLogService->log(
+            $connectedUser,
+            ActivityModule::UTILISATEUR,
+            'user.updated',
+            "A modifié les informations de l'utilisateur {$targetUser->prenom} {$targetUser->nom}.",
+            $targetUser
+        );
+
+        return $targetUser;
     });
 }
 
@@ -363,6 +465,37 @@ private function validateUpdateRules(
         $targetUser,
         $data['role_id']
     );
+}
+
+/**
+ * Met à jour le profil (nom, prénom, photo)
+ * de l'utilisateur connecté lui-même.
+ */
+public function updateOwnProfile(
+    array $data,
+    User $connectedUser
+): User {
+
+    return DB::transaction(function () use ($data, $connectedUser) {
+
+        $this->updatePhoto(
+            $data,
+            $connectedUser
+        );
+
+        $connectedUser->update([
+
+            'nom' => $data['nom'],
+
+            'prenom' => $data['prenom'],
+
+            'photo' => $data['photo'] ?? $connectedUser->photo,
+
+        ]);
+
+        return $connectedUser->fresh()->load('role');
+    });
+
 }
 
 /**
@@ -587,7 +720,97 @@ public function updateStatus(
         'actif' => $data['actif'],
     ]);
 
+    if (! $data['actif']) {
+        $targetUser->tokens()->delete();
+    }
+
+    $this->activityLogService->log(
+        $connectedUser,
+        ActivityModule::UTILISATEUR,
+        $data['actif'] ? 'user.activated' : 'user.deactivated',
+        $data['actif']
+            ? "A réactivé le compte de {$targetUser->prenom} {$targetUser->nom}."
+            : "A désactivé le compte de {$targetUser->prenom} {$targetUser->nom}.",
+        $targetUser
+    );
+
     return $targetUser->fresh()->load('role');
+}
+
+/**
+ * Supprime définitivement un utilisateur (suppression douce : le compte
+ * disparaît des listes actives mais reste consultable, en lecture seule,
+ * depuis l'historique des réservations qu'il a créées).
+ */
+public function deleteUser(
+    User $connectedUser,
+    User $targetUser
+): void {
+
+    $this->ensureCanManageUsers(
+        $connectedUser
+    );
+
+    $this->ensureSameEntreprise(
+        $connectedUser,
+        $targetUser
+    );
+
+    $this->ensureTargetCanBeDeleted(
+        $connectedUser,
+        $targetUser
+    );
+
+    $prenom = $targetUser->prenom;
+    $nom = $targetUser->nom;
+
+    $targetUser->delete();
+
+    $this->activityLogService->log(
+        $connectedUser,
+        ActivityModule::UTILISATEUR,
+        'user.deleted',
+        "A supprimé l'utilisateur {$prenom} {$nom}.",
+        $targetUser
+    );
+
+}
+
+/**
+ * Vérifie que la cible peut être supprimée.
+ */
+private function ensureTargetCanBeDeleted(
+    User $connectedUser,
+    User $targetUser
+): void {
+
+    if ($connectedUser->id === $targetUser->id) {
+
+        throw new AuthorizationException(
+            "Vous ne pouvez pas supprimer votre propre compte."
+        );
+
+    }
+
+    if ($targetUser->hasRole(RoleName::SUPER_ADMIN->value)) {
+
+        throw new AuthorizationException(
+            "Vous ne pouvez pas supprimer ce compte."
+        );
+
+    }
+
+    if (
+        $connectedUser->hasRole(RoleName::ADMIN->value)
+        && $targetUser->hasRole(RoleName::ADMIN->value)
+    ) {
+
+        throw new AuthorizationException(
+            "Vous ne pouvez pas supprimer cet utilisateur."
+        );
+
+    }
+
 }
 
 /**
@@ -617,6 +840,36 @@ private function validateStatusUpdateRules(
         $targetUser,
         $newStatus
     );
+
+    $this->ensureAccountIsSelfActivatedBeforeEnabling(
+        $targetUser,
+        $newStatus
+    );
+}
+
+/**
+ * Un administrateur ne peut pas activer un compte que l'utilisateur
+ * n'a pas encore activé lui-même (mot de passe jamais défini via le
+ * lien d'activation envoyé par e-mail).
+ */
+private function ensureAccountIsSelfActivatedBeforeEnabling(
+    User $targetUser,
+    bool $newStatus
+): void {
+
+    if (
+        $newStatus
+        && ! $targetUser->password_changed
+    ) {
+
+        throw ValidationException::withMessages([
+            'actif' => [
+                "Cet utilisateur n'a pas encore activé son compte (il doit définir son mot de passe via le lien d'activation reçu par e-mail). Vous ne pouvez pas l'activer à sa place.",
+            ],
+        ]);
+
+    }
+
 }
 
 /**
@@ -753,6 +1006,58 @@ private function sendActivationLink(
             $user,
             $activationLink
         );
+}
+
+/**
+ * Valeurs par défaut des préférences de notification.
+ */
+private function defaultNotificationPreferences(): array
+{
+    return [
+        'reservations' => true,
+        'rappels' => true,
+        'systeme' => true,
+        'rapports_hebdomadaires' => false,
+    ];
+}
+
+/**
+ * Retourne les préférences de notification
+ * de l'utilisateur connecté.
+ */
+public function getNotificationPreferences(
+    User $connectedUser
+): array {
+
+    return array_merge(
+        $this->defaultNotificationPreferences(),
+        $connectedUser->notification_preferences ?? []
+    );
+
+}
+
+/**
+ * Met à jour les préférences de notification
+ * de l'utilisateur connecté.
+ */
+public function updateNotificationPreferences(
+    array $data,
+    User $connectedUser
+): array {
+
+    $preferences = [
+        'reservations' => $data['reservations'],
+        'rappels' => $data['rappels'],
+        'systeme' => $data['systeme'],
+        'rapports_hebdomadaires' => $data['rapports_hebdomadaires'],
+    ];
+
+    $connectedUser->update([
+        'notification_preferences' => $preferences,
+    ]);
+
+    return $preferences;
+
 }
 
 }

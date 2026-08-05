@@ -48,6 +48,16 @@ class AvailableEquipmentRequest extends FormRequest
 
             ],
 
+            'exclude_reservation_id' => [
+
+                'nullable',
+
+                'integer',
+
+                'exists:reservations,id',
+
+            ],
+
         ];
     }
 }
