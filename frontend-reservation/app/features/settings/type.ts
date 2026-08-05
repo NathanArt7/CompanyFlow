@@ -38,13 +38,6 @@ export interface ReservationSettingPayload {
   service_hours: ServiceHourPayload[]
 }
 
-export interface NotificationPreferences {
-  reservations: boolean
-  rappels: boolean
-  systeme: boolean
-  rapports_hebdomadaires: boolean
-}
-
 export interface RawEntreprise {
   id: number
   reference: string

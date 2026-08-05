@@ -95,7 +95,7 @@ onUnmounted(() => {
       <ThemeToggle />
 
       <div class="relative" @click.stop>
-        <button class="relative text-muted hover:text-foreground transition-colors" @click="toggleNotifications">
+        <button class="relative flex items-center justify-center w-5 h-5 text-muted hover:text-foreground transition-colors" @click="toggleNotifications">
           <Bell class="w-5 h-5" />
           <span
             v-if="notificationStore.unreadCount > 0"

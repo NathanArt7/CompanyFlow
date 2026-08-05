@@ -33,7 +33,17 @@ function normalizeError(error: unknown): ApiError {
 // valeur pas encore synchronisée. useState() garantit une ref unique partagée au sein de
 // l'instance de l'app ; le cookie ne sert qu'à faire persister le token entre les rechargements.
 function useAuthToken() {
-  const cookie = useCookie<string | null>('auth_token', { default: () => null })
+  // secure: désactivé en dev (process.dev) car le serveur local tourne en http:// —
+  // un cookie "secure" y serait silencieusement ignoré par le navigateur, cassant la
+  // connexion. sameSite: 'strict' limite l'envoi du cookie aux requêtes same-site,
+  // réduisant l'exposition du token en cas de faille XSS ailleurs dans l'app (un vrai
+  // cookie httpOnly serait préférable mais demanderait que ce soit le backend Laravel,
+  // et non ce composable côté client, qui pose le cookie via l'en-tête Set-Cookie).
+  const cookie = useCookie<string | null>('auth_token', {
+    default: () => null,
+    secure: !process.dev,
+    sameSite: 'strict',
+  })
   const token = useState<string | null>('auth-token', () => cookie.value)
 
   function setToken(value: string | null) {

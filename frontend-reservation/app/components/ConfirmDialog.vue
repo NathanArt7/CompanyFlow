@@ -38,6 +38,7 @@ const emit = defineEmits<{
 
         <div class="mb-6">
           <p class="text-muted text-sm">{{ message }}</p>
+          <slot />
           <p v-if="error" class="text-red-400 text-sm mt-2">{{ error }}</p>
         </div>
 

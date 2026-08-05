@@ -10,6 +10,7 @@ import type {
 
 export interface GetReservationsParams {
   date?: string
+  from_date?: string
   room_id?: number
   status?: 'CONFIRMEE' | 'ANNULEE' | 'EN_COURS' | 'PASSEE'
   user_id?: number

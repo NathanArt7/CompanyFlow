@@ -113,10 +113,8 @@ export const ChangePasswordModal: typeof import("../app/features/settings/compon
 export const CompanyInfoCard: typeof import("../app/features/settings/components/CompanyInfoCard.vue")['default']
 export const EditBusinessHoursModal: typeof import("../app/features/settings/components/EditBusinessHoursModal.vue")['default']
 export const EditCompanyInfoModal: typeof import("../app/features/settings/components/EditCompanyInfoModal.vue")['default']
-export const NotificationsCard: typeof import("../app/features/settings/components/NotificationsCard.vue")['default']
 export const PasswordCard: typeof import("../app/features/settings/components/PasswordCard.vue")['default']
 export const EntrepriseService: typeof import("../app/features/settings/services/entreprise.service")['default']
-export const NotificationPreferenceService: typeof import("../app/features/settings/services/notification-preference.service")['default']
 export const ReservationSettingService: typeof import("../app/features/settings/services/reservation-setting.service")['default']
 export const CloseTicketModal: typeof import("../app/features/tickets/components/CloseTicketModal.vue")['default']
 export const CreateTicketModal: typeof import("../app/features/tickets/components/CreateTicketModal.vue")['default']
@@ -256,10 +254,8 @@ export const LazyChangePasswordModal: LazyComponent<typeof import("../app/featur
 export const LazyCompanyInfoCard: LazyComponent<typeof import("../app/features/settings/components/CompanyInfoCard.vue")['default']>
 export const LazyEditBusinessHoursModal: LazyComponent<typeof import("../app/features/settings/components/EditBusinessHoursModal.vue")['default']>
 export const LazyEditCompanyInfoModal: LazyComponent<typeof import("../app/features/settings/components/EditCompanyInfoModal.vue")['default']>
-export const LazyNotificationsCard: LazyComponent<typeof import("../app/features/settings/components/NotificationsCard.vue")['default']>
 export const LazyPasswordCard: LazyComponent<typeof import("../app/features/settings/components/PasswordCard.vue")['default']>
 export const LazyEntrepriseService: LazyComponent<typeof import("../app/features/settings/services/entreprise.service")['default']>
-export const LazyNotificationPreferenceService: LazyComponent<typeof import("../app/features/settings/services/notification-preference.service")['default']>
 export const LazyReservationSettingService: LazyComponent<typeof import("../app/features/settings/services/reservation-setting.service")['default']>
 export const LazyCloseTicketModal: LazyComponent<typeof import("../app/features/tickets/components/CloseTicketModal.vue")['default']>
 export const LazyCreateTicketModal: LazyComponent<typeof import("../app/features/tickets/components/CreateTicketModal.vue")['default']>
