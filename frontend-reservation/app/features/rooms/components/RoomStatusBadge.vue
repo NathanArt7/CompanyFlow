@@ -9,6 +9,7 @@ const statusConfig: Record<RoomStatus, { label: string; dotClass: string; textCl
   available: { label: 'Disponible', dotClass: 'bg-green-500', textClass: 'text-green-500' },
   occupied: { label: 'Occupée', dotClass: 'bg-orange-500', textClass: 'text-orange-500' },
   maintenance: { label: 'En maintenance', dotClass: 'bg-red-500', textClass: 'text-red-400' },
+  out_of_service: { label: 'Hors service', dotClass: 'bg-muted', textClass: 'text-muted' },
 }
 </script>
 

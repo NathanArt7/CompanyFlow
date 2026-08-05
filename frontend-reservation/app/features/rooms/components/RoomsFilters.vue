@@ -1,17 +1,36 @@
 <script setup lang="ts">
 import { Search, RotateCcw } from 'lucide-vue-next'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import type { RoomFilters } from '../type'
+
+const emit = defineEmits<{
+  'update:filters': [RoomFilters]
+}>()
 
 const searchQuery = ref('')
 const selectedType = ref('all')
 const selectedStatus = ref('all')
-const selectedCapacity = ref('all')
+
+let debounceTimer: ReturnType<typeof setTimeout> | undefined
+
+function emitFilters() {
+  emit('update:filters', {
+    search: searchQuery.value,
+    type: selectedType.value === 'all' ? null : selectedType.value as 'MEETING' | 'STORAGE',
+    statut: selectedStatus.value === 'all' ? null : selectedStatus.value as RoomFilters['statut'],
+  })
+}
+
+watch(searchQuery, () => {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(emitFilters, 300)
+})
 
 const resetFilters = () => {
   searchQuery.value = ''
   selectedType.value = 'all'
   selectedStatus.value = 'all'
-  selectedCapacity.value = 'all'
+  emitFilters()
 }
 </script>
 
@@ -30,30 +49,23 @@ const resetFilters = () => {
     <select
       v-model="selectedType"
       class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
+      @change="emitFilters"
     >
       <option value="all">Tous les types</option>
-      <option value="reunion">Réunion</option>
-      <option value="stockage">Stockage</option>
+      <option value="MEETING">Réunion</option>
+      <option value="STORAGE">Stockage</option>
     </select>
 
     <select
       v-model="selectedStatus"
       class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
+      @change="emitFilters"
     >
       <option value="all">Tous les statuts</option>
-      <option value="available">Disponible</option>
-      <option value="occupied">Occupée</option>
-      <option value="maintenance">En maintenance</option>
-    </select>
-
-    <select
-      v-model="selectedCapacity"
-      class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
-    >
-      <option value="all">Toutes les capacités</option>
-      <option value="small">1-8 places</option>
-      <option value="medium">9-16 places</option>
-      <option value="large">17+ places</option>
+      <option value="Disponible">Disponible</option>
+      <option value="Occupée">Occupée</option>
+      <option value="En maintenance">En maintenance</option>
+      <option value="Hors service">Hors service</option>
     </select>
 
     <button

@@ -9,23 +9,17 @@ definePageMeta({ layout: 'default', middleware: 'auth' })
       <p class="text-muted text-sm mt-1">Gérez les paramètres généraux de votre application.</p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-      <div class="lg:col-span-1">
-        <SettingsSidebar />
+    <div class="space-y-6">
+      <CompanyInfoCard />
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <BusinessHoursCard />
+        <NotificationsCard />
       </div>
 
-      <div class="lg:col-span-3 space-y-6">
-        <CompanyInfoCard />
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <BusinessHoursCard />
-          <NotificationsCard />
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <BackupCard />
-          <SecurityCard />
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <AboutCard />
+        <PasswordCard />
       </div>
     </div>
   </div>

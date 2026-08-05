@@ -93,7 +93,7 @@ const handleSubmit = async () => {
         </h1>
         <p class="text-muted text-sm mt-3 leading-relaxed text-center">
           Configurez les paramètres de réservation de votre entreprise. Vous
-          pourrez les modifier à tout moment depuis les paramètres de CompanyFlow.
+          pourrez les modifier à tout moment depuis les paramètres de CompanyPilot.
         </p>
 
         <!-- Formulaire -->
@@ -196,7 +196,7 @@ const handleSubmit = async () => {
     </div>
 
     <p class="relative z-10 text-center text-muted text-xs mt-8">
-      © {{ new Date().getFullYear() }} CompanyFlow. Tous droits réservés.
+      © {{ new Date().getFullYear() }} CompanyPilot. Tous droits réservés.
     </p>
   </div>
 </template>

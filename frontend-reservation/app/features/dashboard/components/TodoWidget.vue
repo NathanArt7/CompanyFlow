@@ -67,9 +67,12 @@ onMounted(async () => {
   <div class="bg-surface border border-border rounded-xl p-4 h-full flex flex-col">
     <h2 class="text-foreground font-semibold text-sm mb-2">À traiter</h2>
 
-    <p v-if="isLoading" class="text-muted text-xs">
-      Chargement…
-    </p>
+    <div v-if="isLoading" class="flex-1 flex flex-col justify-around gap-2">
+      <div v-for="i in 3" :key="i" class="flex items-center justify-between gap-3">
+        <Skeleton class="h-3 w-32" />
+        <Skeleton class="h-3 w-10" />
+      </div>
+    </div>
     <p v-else-if="error" class="text-red-400 text-xs">
       {{ error }}
     </p>

@@ -10,16 +10,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#0a0a0f',
-        surface: '#111117',
-        border: '#1f1f28',
+        background: 'var(--color-background)',
+        surface: 'var(--color-surface)',
+        border: 'var(--color-border)',
         primary: {
           DEFAULT: '#6366f1',
           hover: '#5457e5',
           light: '#818cf8',
         },
-        muted: '#9ca3af',
-        foreground: '#f5f5f7',
+        muted: 'var(--color-muted)',
+        foreground: 'var(--color-foreground)',
+        skeleton: 'var(--color-skeleton)',
+        'grid-line': 'var(--color-grid-line)',
       },
       borderRadius: {
         DEFAULT: '0.75rem',

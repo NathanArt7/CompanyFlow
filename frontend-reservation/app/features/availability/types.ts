@@ -8,34 +8,23 @@ export interface AvailabilityStat {
   subtext: string
 }
 
-export interface WeekDay {
-  date: number
-  dayLabel: string // "Lun 19/05"
-  isSelected: boolean
-}
+export type SlotStatus = 'available' | 'reserved' | 'buffer' | 'maintenance' | 'out_of_service'
 
-export type SlotStatus = 'available' | 'reserved' | 'maintenance' | 'out_of_service'
-
-export interface RoomEvent {
-  startCol: number // index de la colonne de début (0-based)
-  span: number // nombre de colonnes couvertes
+export interface ScheduleBlock {
+  startMinutes: number
+  endMinutes: number
   status: SlotStatus
-  title?: string
-  time?: string
+  title: string
 }
 
-export interface AvailabilityRoom {
+export interface ScheduleRow {
   id: string
   name: string
   subtitle: string
   icon: Component
-  events: RoomEvent[] // événements pour le jour actuellement sélectionné
-}
-
-export interface EquipmentAvailability {
-  id: string
-  name: string
-  subtitle: string
-  icon: Component
-  events: RoomEvent[] // même structure que pour les salles
+  blocks: ScheduleBlock[]
+  // Salle/équipement indisponible toute la journée (maintenance, hors service...) :
+  // remplace les blocs individuels par une seule piste pleine largeur.
+  fullDayStatus?: SlotStatus
+  fullDayLabel?: string
 }

@@ -268,6 +268,7 @@ declare global {
   const useMutationObserver: typeof import('../../node_modules/@vueuse/core').useMutationObserver
   const useNavigatorLanguage: typeof import('../../node_modules/@vueuse/core').useNavigatorLanguage
   const useNetwork: typeof import('../../node_modules/@vueuse/core').useNetwork
+  const useNotificationStore: typeof import('../../app/stores/notification.store').useNotificationStore
   const useNow: typeof import('../../node_modules/@vueuse/core').useNow
   const useNuxtApp: typeof import('../../node_modules/nuxt/dist/app/nuxt').useNuxtApp
   const useNuxtData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData').useNuxtData
@@ -361,6 +362,7 @@ declare global {
   const useSessionStorage: typeof import('../../node_modules/@vueuse/core').useSessionStorage
   const useShadowRoot: typeof import('vue').useShadowRoot
   const useShare: typeof import('../../node_modules/@vueuse/core').useShare
+  const useSidebar: typeof import('../../app/composables/useSidebar').useSidebar
   const useSlots: typeof import('vue').useSlots
   const useSorted: typeof import('../../node_modules/@vueuse/core').useSorted
   const useSpeechRecognition: typeof import('../../node_modules/@vueuse/core').useSpeechRecognition
@@ -371,11 +373,13 @@ declare global {
   const useStyleTag: typeof import('../../node_modules/@vueuse/core').useStyleTag
   const useSupported: typeof import('../../node_modules/@vueuse/core').useSupported
   const useSwipe: typeof import('../../node_modules/@vueuse/core').useSwipe
+  const useTableExport: typeof import('../../app/composables/useTableExport').useTableExport
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useTemplateRefsList: typeof import('../../node_modules/@vueuse/core').useTemplateRefsList
   const useTextDirection: typeof import('../../node_modules/@vueuse/core').useTextDirection
   const useTextSelection: typeof import('../../node_modules/@vueuse/core').useTextSelection
   const useTextareaAutosize: typeof import('../../node_modules/@vueuse/core').useTextareaAutosize
+  const useTheme: typeof import('../../app/composables/useTheme').useTheme
   const useThrottle: typeof import('../../node_modules/@vueuse/core').useThrottle
   const useThrottleFn: typeof import('../../node_modules/@vueuse/core').useThrottleFn
   const useThrottledRefHistory: typeof import('../../node_modules/@vueuse/core').useThrottledRefHistory
@@ -439,6 +443,12 @@ declare global {
   // @ts-ignore
   export type { ApiError } from '../../app/composables/useApi'
   import('../../app/composables/useApi')
+  // @ts-ignore
+  export type { ExportColumn, ExportRow } from '../../app/composables/useTableExport'
+  import('../../app/composables/useTableExport')
+  // @ts-ignore
+  export type { Theme } from '../../app/composables/useTheme'
+  import('../../app/composables/useTheme')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'
@@ -711,6 +721,7 @@ declare module 'vue' {
     readonly useMutationObserver: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useMutationObserver']>
     readonly useNavigatorLanguage: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useNavigatorLanguage']>
     readonly useNetwork: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useNetwork']>
+    readonly useNotificationStore: UnwrapRef<typeof import('../../app/stores/notification.store')['useNotificationStore']>
     readonly useNow: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useNow']>
     readonly useNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>
@@ -804,6 +815,7 @@ declare module 'vue' {
     readonly useSessionStorage: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useSessionStorage']>
     readonly useShadowRoot: UnwrapRef<typeof import('vue')['useShadowRoot']>
     readonly useShare: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useShare']>
+    readonly useSidebar: UnwrapRef<typeof import('../../app/composables/useSidebar')['useSidebar']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useSorted: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useSorted']>
     readonly useSpeechRecognition: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useSpeechRecognition']>
@@ -814,11 +826,13 @@ declare module 'vue' {
     readonly useStyleTag: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useStyleTag']>
     readonly useSupported: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useSupported']>
     readonly useSwipe: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useSwipe']>
+    readonly useTableExport: UnwrapRef<typeof import('../../app/composables/useTableExport')['useTableExport']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTemplateRefsList: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useTemplateRefsList']>
     readonly useTextDirection: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useTextDirection']>
     readonly useTextSelection: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useTextSelection']>
     readonly useTextareaAutosize: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useTextareaAutosize']>
+    readonly useTheme: UnwrapRef<typeof import('../../app/composables/useTheme')['useTheme']>
     readonly useThrottle: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useThrottle']>
     readonly useThrottleFn: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useThrottleFn']>
     readonly useThrottledRefHistory: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useThrottledRefHistory']>

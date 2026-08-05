@@ -35,6 +35,10 @@ export { computedAsync, asyncComputed, computedEager, eagerComputed, computedInj
 export { definePageMeta, PageMeta } from '#app/composables/pages';
 export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { useApi, ApiError } from '../app/composables/useApi';
+export { useSidebar } from '../app/composables/useSidebar';
+export { useTableExport, ExportColumn, ExportRow } from '../app/composables/useTableExport';
+export { useTheme, Theme } from '../app/composables/useTheme';
 export { useAuthStore } from '../app/stores/auth.store';
 export { useCompanyStore } from '../app/stores/company.store';
+export { useNotificationStore } from '../app/stores/notification.store';
 export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../node_modules/@pinia/nuxt/dist/runtime/composables';

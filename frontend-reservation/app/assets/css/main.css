@@ -2,3 +2,38 @@ html {
   scroll-behavior: smooth;
 }
 
+:root {
+  --color-background: #0a0a0f;
+  --color-surface: #111117;
+  --color-border: #1f1f28;
+  --color-muted: #9ca3af;
+  --color-foreground: #f5f5f7;
+  --color-skeleton: #23232e;
+  --color-grid-line: rgba(255, 255, 255, 0.22);
+}
+
+html.light {
+  --color-background: #f4f4f7;
+  --color-surface: #ffffff;
+  --color-border: #e2e2ea;
+  --color-muted: #6b7280;
+  --color-foreground: #111117;
+  --color-skeleton: #dcdce3;
+  --color-grid-line: rgba(17, 17, 23, 0.45);
+}
+
+/* Les icônes natives (calendrier/horloge) des <input type="date"/"time"> sont rendues
+   en noir par le navigateur : invisibles sur les champs à fond sombre. On les éclaircit
+   par défaut (thème sombre) et on annule ce filtre en thème clair, où le noir natif
+   reste lisible sur fond blanc. Uniquement supporté sur les navigateurs Chromium/WebKit. */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+  cursor: pointer;
+}
+
+html.light input[type="date"]::-webkit-calendar-picker-indicator,
+html.light input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: none;
+}
+

@@ -175,7 +175,7 @@ const handleSubmit = async () => {
     </div>
 
     <p class="relative z-10 text-center text-muted text-xs mt-8">
-      © {{ new Date().getFullYear() }} CompanyFlow. Tous droits réservés.
+      © {{ new Date().getFullYear() }} CompanyPilot. Tous droits réservés.
     </p>
   </div>
 </template>

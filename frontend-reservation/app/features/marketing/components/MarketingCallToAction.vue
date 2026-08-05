@@ -69,7 +69,7 @@
           px-2
         "
       >
-        Rejoignez les entreprises qui utilisent CompanyFlow pour centraliser
+        Rejoignez les entreprises qui utilisent CompanyPilot pour centraliser
         leurs réservations, leurs équipements et leur collaboration.
       </p>
 

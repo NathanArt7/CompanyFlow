@@ -3,6 +3,7 @@ import { computed } from 'vue'
 
 const props = defineProps<{
   userName: string
+  subtitle?: string
 }>()
 
 const formattedDate = computed(() => {
@@ -26,7 +27,7 @@ const formattedDate = computed(() => {
         <span>👋</span>
       </h1>
       <p class="text-muted text-sm mt-1">
-        Voici un aperçu de l'activité de la plateforme aujourd'hui.
+        {{ subtitle ?? "Voici un aperçu de l'activité de la plateforme aujourd'hui." }}
       </p>
     </div>
 

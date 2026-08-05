@@ -25,9 +25,21 @@ const handleSubmit = async () => {
   isSubmitting.value = true
   try {
     await authStore.login(form.value.email, form.value.password)
-    const destination = authStore.user?.entreprise_configured ? '/dashboard' : '/onboarding/company'
+
+    // L'Employé n'a pas de page Dashboard dans sa sidebar : direction sa page
+    // Tickets plutôt qu'un dashboard générique auquel il n'a pas vraiment accès.
+    const destination = !authStore.user?.entreprise_configured
+      ? '/onboarding/company'
+      : authStore.user?.role === 'Employe'
+        ? '/tickets'
+        : '/dashboard'
+
     await navigateTo(destination)
   } catch (e) {
+    if ((e as ApiError).code === 'ACCOUNT_DISABLED') {
+      await navigateTo('/compte-desactive')
+      return
+    }
     errorMessage.value = (e as ApiError).message ?? 'Email ou mot de passe incorrect.'
   } finally {
     isSubmitting.value = false
@@ -54,7 +66,7 @@ const handleSubmit = async () => {
           Connectez-vous à votre espace
         </h1>
         <p class="text-muted text-sm mt-3 leading-relaxed text-center">
-          Accédez à votre espace CompanyFlow
+          Accédez à votre espace CompanyPilot
         </p>
 
         <!-- Formulaire -->

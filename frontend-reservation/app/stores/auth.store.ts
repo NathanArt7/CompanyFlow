@@ -22,6 +22,11 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = await authService.me()
   }
 
+  async function updateProfile(formData: FormData) {
+    const authService = useAuthService()
+    user.value = await authService.updateProfile(formData)
+  }
+
   async function logout() {
     const authService = useAuthService()
     const { setToken } = useApi()
@@ -37,5 +42,5 @@ export const useAuthStore = defineStore('auth', () => {
     await navigateTo('/login')
   }
 
-  return { user, isAuthenticated, permissions, login, fetchMe, logout }
+  return { user, isAuthenticated, permissions, login, fetchMe, updateProfile, logout }
 })

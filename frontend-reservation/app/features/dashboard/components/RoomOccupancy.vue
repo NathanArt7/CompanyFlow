@@ -38,9 +38,15 @@ onMounted(async () => {
     </div>
     <p class="text-muted text-xs mb-3">Aujourd'hui</p>
 
-    <p v-if="isLoading" class="text-muted text-xs">
-      Chargement…
-    </p>
+    <div v-if="isLoading" class="space-y-3">
+      <div v-for="i in 4" :key="i">
+        <div class="flex items-center justify-between mb-1">
+          <Skeleton class="h-3 w-24" />
+          <Skeleton class="h-3 w-8" />
+        </div>
+        <Skeleton class="h-1 w-full rounded-full" />
+      </div>
+    </div>
     <p v-else-if="error" class="text-red-400 text-xs">
       {{ error }}
     </p>

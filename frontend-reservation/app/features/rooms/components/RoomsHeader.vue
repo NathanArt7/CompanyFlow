@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { Plus, Upload } from 'lucide-vue-next'
+import { Plus } from 'lucide-vue-next'
+import type { ExportColumn, ExportRow } from '~/composables/useTableExport'
+
+defineProps<{
+  exportColumns: ExportColumn[]
+  exportRows: ExportRow[]
+}>()
+
+const emit = defineEmits<{
+  'create-click': []
+}>()
 </script>
 
 <template>
@@ -10,15 +20,20 @@ import { Plus, Upload } from 'lucide-vue-next'
     </div>
 
     <div class="flex items-center gap-3 shrink-0">
-      <button class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
+      <button
+        class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
+        @click="emit('create-click')"
+      >
         <Plus class="w-4 h-4" />
         Ajouter une salle
       </button>
 
-      <button class="flex items-center gap-2 bg-surface hover:bg-border border border-border text-foreground text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
-        <Upload class="w-4 h-4" />
-        Exporter
-      </button>
+      <ExportMenu
+        filename="salles"
+        title="Salles"
+        :columns="exportColumns"
+        :rows="exportRows"
+      />
     </div>
   </div>
 </template>

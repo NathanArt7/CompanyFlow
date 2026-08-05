@@ -32,6 +32,11 @@ export interface MeResponse {
   entreprise_configured: boolean
 }
 
+export interface UpdateProfileResponse {
+  message: string
+  user: MeResponse
+}
+
 export interface ActivateAccountPayload {
   token: string
   password: string

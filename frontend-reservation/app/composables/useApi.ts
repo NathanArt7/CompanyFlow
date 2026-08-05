@@ -4,11 +4,12 @@ export interface ApiError {
   status: number
   message: string
   errors?: Record<string, string[]>
+  code?: string
 }
 
 function normalizeError(error: unknown): ApiError {
   if (error instanceof FetchError) {
-    const data = error.data as { message?: string; errors?: Record<string, string[]> } | undefined
+    const data = error.data as { message?: string; errors?: Record<string, string[]>; code?: string } | undefined
     const status = error.response?.status ?? error.statusCode ?? 0
     const errors = data?.errors
     const firstFieldError = errors ? Object.values(errors)[0]?.[0] : undefined
@@ -16,6 +17,7 @@ function normalizeError(error: unknown): ApiError {
     return {
       status,
       errors,
+      code: data?.code,
       message: firstFieldError ?? data?.message ?? 'Une erreur est survenue. Veuillez réessayer.',
     }
   }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ReservationStatus } from '../types'
+import type { ReservationStatus } from '../type'
 
 defineProps<{
   status: ReservationStatus
@@ -7,8 +7,9 @@ defineProps<{
 
 const statusConfig: Record<ReservationStatus, { label: string; class: string }> = {
   confirmed: { label: 'Confirmée', class: 'bg-green-500/10 text-green-500 border-green-500/20' },
-  pending: { label: 'En attente', class: 'bg-orange-500/10 text-orange-500 border-orange-500/20' },
+  ongoing: { label: 'En cours', class: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
   cancelled: { label: 'Annulée', class: 'bg-red-500/10 text-red-400 border-red-500/20' },
+  past: { label: 'Passée', class: 'bg-gray-500/10 text-muted border-gray-500/20' },
 }
 </script>
 

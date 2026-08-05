@@ -49,9 +49,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <p v-if="isLoading" class="text-muted text-xs">
-    Chargement…
-  </p>
+  <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <SkeletonStatCard v-for="i in 4" :key="i" />
+  </div>
   <p v-else-if="error" class="text-red-400 text-xs">
     {{ error }}
   </p>

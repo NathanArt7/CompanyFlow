@@ -1,16 +1,56 @@
 <script setup lang="ts">
 import { Clock } from 'lucide-vue-next'
-import type { BusinessHourRow } from '../types'
+import { computed, onMounted, ref } from 'vue'
+import type { RawReservationSetting } from '../type'
+import { useReservationSettingService } from '../services/reservation-setting.service'
 
-const hours: BusinessHourRow[] = [
-  { day: 'Lundi', hours: '08:00 - 18:00', isClosed: false },
-  { day: 'Mardi', hours: '08:00 - 18:00', isClosed: false },
-  { day: 'Mercredi', hours: '08:00 - 18:00', isClosed: false },
-  { day: 'Jeudi', hours: '08:00 - 18:00', isClosed: false },
-  { day: 'Vendredi', hours: '08:00 - 18:00', isClosed: false },
-  { day: 'Samedi', hours: 'Fermé', isClosed: true },
-  { day: 'Dimanche', hours: 'Fermé', isClosed: true },
-]
+const reservationSettingService = useReservationSettingService()
+const authStore = useAuthStore()
+
+const canManage = computed(() => authStore.permissions.includes('configurer_systeme'))
+
+const dayLabels: Record<string, string> = {
+  MONDAY: 'Lundi',
+  TUESDAY: 'Mardi',
+  WEDNESDAY: 'Mercredi',
+  THURSDAY: 'Jeudi',
+  FRIDAY: 'Vendredi',
+  SATURDAY: 'Samedi',
+  SUNDAY: 'Dimanche',
+}
+
+const dayOrder = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
+
+const setting = ref<RawReservationSetting | null>(null)
+const isLoading = ref(true)
+const error = ref<string | null>(null)
+const isModalOpen = ref(false)
+
+const orderedHours = computed(() => {
+  if (!setting.value) return []
+  return [...setting.value.service_hours].sort(
+    (a, b) => dayOrder.indexOf(a.day_of_week) - dayOrder.indexOf(b.day_of_week),
+  )
+})
+
+async function load() {
+  isLoading.value = true
+  error.value = null
+  try {
+    setting.value = await reservationSettingService.get()
+  } catch {
+    error.value = 'Impossible de charger les horaires.'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+function onSaved(updated: RawReservationSetting) {
+  setting.value = updated
+  isModalOpen.value = false
+}
+
+onMounted(load)
 </script>
 
 <template>
@@ -25,22 +65,46 @@ const hours: BusinessHourRow[] = [
           <p class="text-muted text-xs mt-0.5">Définissez les horaires de disponibilité pour les réservations.</p>
         </div>
       </div>
-      <NuxtLink
-        to="/settings/hours"
+      <button
+        v-if="!isLoading && !error && canManage"
         class="bg-background border border-border rounded-lg px-3 py-1.5 text-sm text-foreground hover:border-primary/40 transition-colors shrink-0"
+        @click="isModalOpen = true"
       >
         Gérer
-      </NuxtLink>
+      </button>
     </div>
 
-    <div class="space-y-2.5">
-      <div v-for="row in hours" :key="row.day" class="flex items-center justify-between text-sm">
-        <div class="flex items-center gap-2">
-          <Clock class="w-3.5 h-3.5" :class="row.isClosed ? 'text-muted/50' : 'text-muted'" />
-          <span class="text-foreground">{{ row.day }}</span>
-        </div>
-        <span :class="row.isClosed ? 'text-red-400' : 'text-foreground'">{{ row.hours }}</span>
+    <div v-if="isLoading" class="space-y-2.5">
+      <div v-for="i in 7" :key="i" class="flex items-center justify-between">
+        <Skeleton class="h-4 w-16" />
+        <Skeleton class="h-4 w-24" />
       </div>
     </div>
+    <p v-else-if="error" class="text-red-400 text-xs">
+      {{ error }}
+    </p>
+    <div v-else class="space-y-2.5">
+      <div v-for="row in orderedHours" :key="row.id" class="flex items-center justify-between text-sm">
+        <div class="flex items-center gap-2">
+          <Clock class="w-3.5 h-3.5" :class="row.is_open ? 'text-muted' : 'text-muted/50'" />
+          <span class="text-foreground">{{ dayLabels[row.day_of_week] }}</span>
+        </div>
+        <span :class="row.is_open ? 'text-foreground' : 'text-red-400'">
+          {{ row.is_open ? `${row.start_time?.slice(0, 5)} - ${row.end_time?.slice(0, 5)}` : 'Fermé' }}
+        </span>
+      </div>
+
+      <div v-if="setting" class="flex items-center justify-between text-sm pt-2.5 mt-1 border-t border-border">
+        <span class="text-foreground">Délai minimum entre deux réservations</span>
+        <span class="text-foreground">{{ setting.reservation_buffer }} min</span>
+      </div>
+    </div>
+
+    <EditBusinessHoursModal
+      :is-open="isModalOpen"
+      :setting="setting"
+      @close="isModalOpen = false"
+      @saved="onSaved"
+    />
   </div>
 </template>

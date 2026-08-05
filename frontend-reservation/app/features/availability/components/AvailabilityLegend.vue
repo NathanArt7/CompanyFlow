@@ -9,6 +9,10 @@
       <span class="text-muted text-sm">Réservée</span>
     </div>
     <div class="flex items-center gap-1.5">
+      <span class="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+      <span class="text-muted text-sm">Délai de réaménagement</span>
+    </div>
+    <div class="flex items-center gap-1.5">
       <span class="w-2.5 h-2.5 rounded-full bg-orange-500" />
       <span class="text-muted text-sm">Maintenance</span>
     </div>

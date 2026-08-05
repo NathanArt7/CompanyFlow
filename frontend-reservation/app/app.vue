@@ -5,8 +5,11 @@
 </template>
 
 <script setup lang="ts">
+const { init } = useTheme()
+onMounted(init)
+
 useHead({
-  titleTemplate: 'CompanyFlow',
+  titleTemplate: 'CompanyPilot',
    link: [
     {
       rel: 'icon',

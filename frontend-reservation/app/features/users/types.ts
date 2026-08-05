@@ -1,7 +1,7 @@
 import type { Component } from 'vue'
 
 export type UserRole = 'super_admin' | 'admin' | 'super_employee' | 'employee' | 'technician'
-export type UserStatus = 'active' | 'pending' | 'disabled' | 'suspended'
+export type UserStatus = 'active' | 'disabled'
 
 export interface UserStat {
   icon: Component
@@ -21,6 +21,5 @@ export interface AppUser {
   avatarBg: string
   role: UserRole
   status: UserStatus
-  lastLogin: string
   createdAt: string
 }

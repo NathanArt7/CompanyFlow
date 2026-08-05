@@ -21,7 +21,7 @@
       </h1>
 
       <p class="text-muted text-base md:text-lg max-w-xl mt-5 md:mt-6 px-2">
-        CompanyFlow centralise les réservations de salles, la gestion du matériel
+        CompanyPilot centralise les réservations de salles, la gestion du matériel
         et la collaboration interne sur une seule plateforme.
       </p>
 

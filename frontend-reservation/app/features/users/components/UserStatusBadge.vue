@@ -7,9 +7,7 @@ defineProps<{
 
 const config: Record<UserStatus, { label: string; dotClass: string; textClass: string }> = {
   active: { label: 'Actif', dotClass: 'bg-green-500', textClass: 'text-green-500' },
-  pending: { label: 'En attente', dotClass: 'bg-blue-400', textClass: 'text-blue-400' },
   disabled: { label: 'Désactivé', dotClass: 'bg-orange-500', textClass: 'text-orange-500' },
-  suspended: { label: 'Suspendu', dotClass: 'bg-red-500', textClass: 'text-red-400' },
 }
 </script>
 

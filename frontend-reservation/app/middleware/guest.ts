@@ -10,6 +10,7 @@ export default defineNuxtRouteMiddleware(async () => {
   }
 
   if (authStore.isAuthenticated) {
-    return navigateTo('/dashboard')
+    // L'Employé n'a pas de page Dashboard dans sa sidebar.
+    return navigateTo(authStore.user?.role === 'Employe' ? '/tickets' : '/dashboard')
   }
 })

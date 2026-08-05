@@ -1,4 +1,4 @@
-import type { ActivateAccountPayload, LoginResponse, MeResponse, ResetPasswordPayload } from '../type'
+import type { ActivateAccountPayload, LoginResponse, MeResponse, ResetPasswordPayload, UpdateProfileResponse } from '../type'
 
 export function useAuthService() {
   const { apiFetch } = useApi()
@@ -50,5 +50,23 @@ export function useAuthService() {
     return apiFetch<MeResponse>('/me')
   }
 
-  return { registerSuperAdmin, login, activateAccount, forgotPassword, resetPassword, logout, me }
+  function changePassword(currentPassword: string, password: string, passwordConfirmation: string) {
+    return apiFetch<{ message: string }>('/change-password', {
+      method: 'POST',
+      body: { current_password: currentPassword, password, password_confirmation: passwordConfirmation },
+    })
+  }
+
+  async function updateProfile(formData: FormData) {
+    // POST + _method=PUT (spoofing Laravel) : un PUT multipart natif ne peuple pas
+    // $_FILES côté PHP, nécessaire pour l'upload optionnel de la photo de profil.
+    formData.append('_method', 'PUT')
+    const response = await apiFetch<UpdateProfileResponse>('/me', {
+      method: 'POST',
+      body: formData,
+    })
+    return response.user
+  }
+
+  return { registerSuperAdmin, login, activateAccount, forgotPassword, resetPassword, logout, me, changePassword, updateProfile }
 }

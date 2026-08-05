@@ -16,7 +16,7 @@ const currentYear = new Date().getFullYear()
             <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <LayoutGrid class="w-4 h-4 text-white" />
             </div>
-            <span class="text-foreground font-semibold text-lg">CompanyFlow</span>
+            <span class="text-foreground font-semibold text-lg">CompanyPilot</span>
           </div>
           <p class="text-muted text-sm max-w-xs leading-relaxed">
             Centralisez les réservations de salles, la gestion des équipements
@@ -84,7 +84,7 @@ const currentYear = new Date().getFullYear()
       <!-- Bas de page -->
       <div class="border-t border-border mt-10 md:mt-12 pt-6 md:pt-8 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 text-center md:text-left">
         <p class="text-muted text-xs">
-          © {{ currentYear }} CompanyFlow. Tous droits réservés.
+          © {{ currentYear }} CompanyPilot. Tous droits réservés.
         </p>
         <p class="text-muted text-xs">
           Made by Nathan.Art

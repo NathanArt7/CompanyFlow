@@ -1,5 +1,7 @@
+import type { Component } from 'vue'
+
 export type RoomType = 'reunion' | 'stockage'
-export type RoomStatus = 'available' | 'occupied' | 'maintenance'
+export type RoomStatus = 'available' | 'occupied' | 'maintenance' | 'out_of_service'
 
 export interface RoomStat {
   icon: Component
@@ -7,6 +9,8 @@ export interface RoomStat {
   value: number
   label: string
   subtext: string
+  barColor: string
+  percentage: number
 }
 
 export interface Room {
@@ -16,5 +20,6 @@ export interface Room {
   type: RoomType
   capacity: number | null
   location: string
+  description: string | null
   status: RoomStatus
 }

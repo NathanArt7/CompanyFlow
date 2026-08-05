@@ -1,18 +1,55 @@
 <script setup lang="ts">
 import { Search, RotateCcw } from 'lucide-vue-next'
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
+import type { EquipmentFilters } from '../type'
+import type { RawEquipmentCategory } from '~/features/equipment-categories/type'
+import { useEquipmentCategoryService } from '~/features/equipment-categories/services/equipment-category.service'
+
+const emit = defineEmits<{
+  'update:filters': [EquipmentFilters]
+}>()
+
+const equipmentCategoryService = useEquipmentCategoryService()
+
+const categories = ref<RawEquipmentCategory[]>([])
+const categoriesAvailable = ref(true)
 
 const searchQuery = ref('')
 const selectedCategory = ref('all')
 const selectedState = ref('all')
 const selectedUsageType = ref('all')
 
+let debounceTimer: ReturnType<typeof setTimeout> | undefined
+
+function emitFilters() {
+  emit('update:filters', {
+    search: searchQuery.value,
+    categoryId: selectedCategory.value === 'all' ? null : Number(selectedCategory.value),
+    usageType: selectedUsageType.value === 'all' ? null : selectedUsageType.value as 'EMPRUNTABLE' | 'NON_EMPRUNTABLE',
+    etat: selectedState.value === 'all' ? null : selectedState.value,
+  })
+}
+
+watch(searchQuery, () => {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(emitFilters, 300)
+})
+
 const resetFilters = () => {
   searchQuery.value = ''
   selectedCategory.value = 'all'
   selectedState.value = 'all'
   selectedUsageType.value = 'all'
+  emitFilters()
 }
+
+onMounted(async () => {
+  try {
+    categories.value = await equipmentCategoryService.list()
+  } catch {
+    categoriesAvailable.value = false
+  }
+})
 </script>
 
 <template>
@@ -27,29 +64,40 @@ const resetFilters = () => {
       >
     </div>
 
-    <select v-model="selectedCategory" class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors">
+    <select
+      v-model="selectedCategory"
+      :disabled="!categoriesAvailable"
+      class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors disabled:opacity-60"
+      @change="emitFilters"
+    >
       <option value="all">Toutes les catégories</option>
-      <option value="videoprojecteurs">Vidéoprojecteurs</option>
-      <option value="ordinateurs">Ordinateurs</option>
-      <option value="audio">Audio</option>
-      <option value="accessoires">Accessoires</option>
-      <option value="visioconference">Visioconférence</option>
+      <option v-for="category in categories" :key="category.id" :value="String(category.id)">
+        {{ category.nom }}
+      </option>
     </select>
 
-    <select v-model="selectedState" class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors">
+    <select
+      v-model="selectedState"
+      class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
+      @change="emitFilters"
+    >
       <option value="all">Tous les états</option>
-      <option value="available">Disponible</option>
-      <option value="occupied">Occupé</option>
-      <option value="maintenance">En maintenance</option>
-      <option value="functional">Fonctionnel</option>
-      <option value="broken">En panne</option>
-      <option value="out_of_service">Hors service</option>
+      <option value="DISPONIBLE">Disponible</option>
+      <option value="OCCUPE">Occupé</option>
+      <option value="FONCTIONNEL">Fonctionnel</option>
+      <option value="EN_PANNE">En panne</option>
+      <option value="EN_MAINTENANCE">En maintenance</option>
+      <option value="HORS_SERVICE">Hors service</option>
     </select>
 
-    <select v-model="selectedUsageType" class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors">
+    <select
+      v-model="selectedUsageType"
+      class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
+      @change="emitFilters"
+    >
       <option value="all">Tous les types d'usage</option>
-      <option value="borrowable">Empruntable</option>
-      <option value="fixed">Non empruntable</option>
+      <option value="EMPRUNTABLE">Empruntable</option>
+      <option value="NON_EMPRUNTABLE">Non empruntable</option>
     </select>
 
     <button class="flex items-center gap-1.5 text-muted hover:text-foreground text-sm transition-colors shrink-0" @click="resetFilters">

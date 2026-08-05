@@ -1,16 +1,51 @@
 <script setup lang="ts">
 import { Search, RotateCcw } from 'lucide-vue-next'
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
+import type { RawRole, UserFilters } from '../type'
+import { useUserService } from '../services/user.service'
+
+const emit = defineEmits<{
+  'update:filters': [UserFilters]
+}>()
+
+const userService = useUserService()
+
+const roles = ref<RawRole[]>([])
+const rolesAvailable = ref(true)
 
 const searchQuery = ref('')
 const selectedRole = ref('all')
 const selectedStatus = ref('all')
 
+let debounceTimer: ReturnType<typeof setTimeout> | undefined
+
+function emitFilters() {
+  emit('update:filters', {
+    search: searchQuery.value,
+    roleId: selectedRole.value === 'all' ? null : Number(selectedRole.value),
+    actif: selectedStatus.value === 'all' ? null : selectedStatus.value === 'active',
+  })
+}
+
+watch(searchQuery, () => {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(emitFilters, 300)
+})
+
 const resetFilters = () => {
   searchQuery.value = ''
   selectedRole.value = 'all'
   selectedStatus.value = 'all'
+  emitFilters()
 }
+
+onMounted(async () => {
+  try {
+    roles.value = await userService.listRoles()
+  } catch {
+    rolesAvailable.value = false
+  }
+})
 </script>
 
 <template>
@@ -25,21 +60,26 @@ const resetFilters = () => {
       >
     </div>
 
-    <select v-model="selectedRole" class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors">
+    <select
+      v-model="selectedRole"
+      :disabled="!rolesAvailable"
+      class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors disabled:opacity-60"
+      @change="emitFilters"
+    >
       <option value="all">Tous les rôles</option>
-      <option value="super_admin">Super Administrateur</option>
-      <option value="admin">Administrateur</option>
-      <option value="super_employee">Super Employé</option>
-      <option value="employee">Employé</option>
-      <option value="technician">Technicien</option>
+      <option v-for="role in roles" :key="role.id" :value="String(role.id)">
+        {{ role.nom.replace('_', ' ') }}
+      </option>
     </select>
 
-    <select v-model="selectedStatus" class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors">
+    <select
+      v-model="selectedStatus"
+      class="bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
+      @change="emitFilters"
+    >
       <option value="all">Tous les statuts</option>
       <option value="active">Actif</option>
-      <option value="pending">En attente</option>
       <option value="disabled">Désactivé</option>
-      <option value="suspended">Suspendu</option>
     </select>
 
     <button class="flex items-center gap-1.5 text-muted hover:text-foreground text-sm transition-colors shrink-0" @click="resetFilters">

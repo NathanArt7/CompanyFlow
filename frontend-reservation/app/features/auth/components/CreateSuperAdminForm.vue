@@ -69,7 +69,7 @@ const handleSubmit = async () => {
           </h1>
           <p class="text-muted text-sm mt-3 leading-relaxed">
             Le Super Administrateur est le responsable principal de votre espace
-            CompanyFlow. Ce compte dispose d'un accès complet pour gérer les
+            CompanyPilot. Ce compte dispose d'un accès complet pour gérer les
             utilisateurs, les salles, les équipements et les paramètres de
             l'entreprise.
           </p>

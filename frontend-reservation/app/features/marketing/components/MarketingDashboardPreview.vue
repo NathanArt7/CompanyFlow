@@ -24,7 +24,7 @@
 
       <img
         src="/images/marketing/dashboard-preview.png"
-        alt="Dashboard CompanyFlow"
+        alt="Dashboard CompanyPilot"
         class="w-full h-auto object-cover"
       />
     </div>

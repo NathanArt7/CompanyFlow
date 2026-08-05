@@ -5,6 +5,11 @@ import type { RawReservation, UpcomingReservation } from '../type'
 import { useDashboardService } from '../services/dashboard.service'
 
 const dashboardService = useDashboardService()
+const authStore = useAuthStore()
+
+// Ses réservations ne concernent que lui-même (scopées côté backend) : la colonne
+// Organisateur n'a pas de sens pour le Super Employé.
+const hideOrganizer = computed(() => authStore.user?.role === 'Super_Employe')
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 const reservations = ref<UpcomingReservation[]>([])
@@ -59,9 +64,7 @@ onMounted(async () => {
       </NuxtLink>
     </div>
 
-    <p v-if="isLoading" class="text-muted text-xs">
-      Chargement…
-    </p>
+    <SkeletonTable v-if="isLoading" :rows="5" :columns="hideOrganizer ? 4 : 5" />
     <p v-else-if="error" class="text-red-400 text-xs">
       {{ error }}
     </p>
@@ -78,7 +81,7 @@ onMounted(async () => {
             <th class="font-medium pb-3 pr-4">Heure</th>
             <th class="font-medium pb-3 pr-4">Salle</th>
             <th class="font-medium pb-3 pr-4">Événement</th>
-            <th class="font-medium pb-3 pr-4">Organisateur</th>
+            <th v-if="!hideOrganizer" class="font-medium pb-3 pr-4">Organisateur</th>
             <th class="font-medium pb-3">Statut</th>
           </tr>
         </thead>
@@ -94,7 +97,7 @@ onMounted(async () => {
               <p class="text-muted text-xs">{{ reservation.location }}</p>
             </td>
             <td class="py-4 pr-4 text-foreground">{{ reservation.event }}</td>
-            <td class="py-4 pr-4">
+            <td v-if="!hideOrganizer" class="py-4 pr-4">
               <div class="flex items-center gap-2">
                 <div class="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
                   <span class="text-primary-light text-xs font-semibold">{{ reservation.organizer.initials }}</span>
@@ -103,7 +106,7 @@ onMounted(async () => {
               </div>
             </td>
             <td class="py-4">
-              <ReservationStatusBadge :status="reservation.status" />
+              <DashboardReservationStatusBadge :status="reservation.status" />
             </td>
           </tr>
         </tbody>
@@ -119,12 +122,12 @@ onMounted(async () => {
       >
         <div class="flex items-center justify-between mb-2">
           <span class="text-foreground text-sm font-medium">{{ reservation.time }}</span>
-          <ReservationStatusBadge :status="reservation.status" />
+          <DashboardReservationStatusBadge :status="reservation.status" />
         </div>
         <p class="text-foreground font-medium">{{ reservation.room }}</p>
         <p class="text-muted text-xs mb-2">{{ reservation.location }}</p>
         <p class="text-foreground text-sm mb-3">{{ reservation.event }}</p>
-        <div class="flex items-center gap-2">
+        <div v-if="!hideOrganizer" class="flex items-center gap-2">
           <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
             <span class="text-primary-light text-xs font-semibold">{{ reservation.organizer.initials }}</span>
           </div>

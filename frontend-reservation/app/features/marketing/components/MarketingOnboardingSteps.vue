@@ -7,7 +7,7 @@ const steps: OnboardingStepData[] = [
     number: 1,
     icon: Building2,
     title: 'Créez votre entreprise',
-    description: 'En quelques clics, créez le profil de votre organisation sur CompanyFlow.',
+    description: 'En quelques clics, créez le profil de votre organisation sur CompanyPilot.',
   },
   {
     number: 2,
@@ -25,7 +25,7 @@ const steps: OnboardingStepData[] = [
     number: 4,
     icon: Settings,
     title: 'Configurez et démarrez',
-    description: 'Personnalisez vos espaces, invitez vos équipes et commencez à utiliser CompanyFlow.',
+    description: 'Personnalisez vos espaces, invitez vos équipes et commencez à utiliser CompanyPilot.',
   },
 ]
 </script>
