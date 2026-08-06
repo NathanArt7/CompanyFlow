@@ -4,9 +4,12 @@ namespace App\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoTransportFactory;
+use Symfony\Component\Mailer\Transport\Dsn;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +34,23 @@ class AppServiceProvider extends ServiceProvider
             $key = Str::lower((string) $request->input('email')) . '|' . $request->ip();
 
             return Limit::perMinute(5)->by($key);
+
+        });
+
+        // Envoi des e-mails via l'API HTTP de Brevo plutôt que par SMTP :
+        // certains hébergeurs (dont Render) bloquent ou rendent instable le SMTP
+        // sortant, ce qui provoquait des requêtes bloquées ~60s (timeout socket
+        // PHP) sur toute action déclenchant un envoi de mail (inscription, etc.).
+        // L'API HTTP passe par HTTPS, qui n'est jamais filtré.
+        Mail::extend('brevo', function () {
+
+            return (new BrevoTransportFactory())->create(
+                new Dsn(
+                    'brevo+api',
+                    'default',
+                    config('services.brevo.key')
+                )
+            );
 
         });
     }
