@@ -8,6 +8,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable
 {
@@ -64,7 +65,20 @@ class User extends Authenticatable
             return null;
         }
 
-        return Storage::disk('cloudinary')->url($this->photo);
+        // Ne doit jamais faire planter la requête appelante (ex. /api/me) :
+        // une photo orpheline ou une erreur Cloudinary ponctuelle ne doit
+        // dégrader que l'affichage de l'avatar, pas casser l'authentification.
+        try {
+            return Storage::disk('cloudinary')->url($this->photo);
+        } catch (\Throwable $e) {
+            Log::warning('Impossible de générer l\'URL de la photo de profil.', [
+                'user_id' => $this->id,
+                'photo' => $this->photo,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
     }
 
     /**
