@@ -25,10 +25,10 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore()
 
-const config = useRuntimeConfig()
+// Le backend renvoie désormais directement une URL publique complète
+// (stockage externe Cloudinary).
 function photoUrl(photo: string | null): string | null {
-  if (!photo) return null
-  return `${config.public.apiBase.replace(/\/api\/?$/, '')}/storage/${photo}`
+  return photo
 }
 
 const roleMap: Record<RoleName, UserRole> = {
