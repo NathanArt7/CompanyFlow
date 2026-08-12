@@ -65,6 +65,10 @@ return [
         // pas persistant d'un déploiement à l'autre.
         'cloudinary' => [
             'driver' => 'cloudinary',
+            // Obligatoire : sans cette clé, le driver du package tente de lire
+            // config('cloud'/'key'/'secret') au lieu de parser l'URL, et plante
+            // avec "Undefined array key \"cloud\"".
+            'url' => env('CLOUDINARY_URL'),
         ],
 
     ],
