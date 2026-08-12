@@ -60,6 +60,13 @@ return [
             'report' => false,
         ],
 
+        // Stockage des photos de profil : Cloudinary (gratuit, sans carte
+        // bancaire requise), nécessaire car le disque local de Render n'est
+        // pas persistant d'un déploiement à l'autre.
+        'cloudinary' => [
+            'driver' => 'cloudinary',
+        ],
+
     ],
 
     /*

@@ -23,12 +23,9 @@ const photoPreview = ref<string | null>(null)
 const isSubmitting = ref(false)
 const errorMessage = ref('')
 
-const config = useRuntimeConfig()
-const currentPhotoUrl = computed(() => {
-  const photo = authStore.user?.photo
-  if (!photo) return null
-  return `${config.public.apiBase.replace(/\/api\/?$/, '')}/storage/${photo}`
-})
+// Le backend renvoie désormais directement une URL publique complète
+// (stockage externe Cloudinary).
+const currentPhotoUrl = computed(() => authStore.user?.photo ?? null)
 
 const initials = computed(() => {
   const user = authStore.user

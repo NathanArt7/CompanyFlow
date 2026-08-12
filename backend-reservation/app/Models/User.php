@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -50,6 +51,20 @@ class User extends Authenticatable
     public function hasRole(string $role): bool
     {
         return $this->role->nom === $role;
+    }
+
+    /**
+     * URL publique de la photo de profil (stockée sur un disque S3-compatible,
+     * ex. Cloudinary — nécessaire car le disque local de Render n'est pas
+     * persistant : tout fichier écrit sur le conteneur disparaît au redéploiement).
+     */
+    public function photoUrl(): ?string
+    {
+        if (! $this->photo) {
+            return null;
+        }
+
+        return Storage::disk('cloudinary')->url($this->photo);
     }
 
     /**

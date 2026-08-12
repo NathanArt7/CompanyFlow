@@ -537,14 +537,14 @@ private function updatePhoto(
 
     if ($targetUser->photo) {
 
-        Storage::disk('public')
+        Storage::disk('cloudinary')
             ->delete($targetUser->photo);
 
     }
 
     $data['photo'] = $data['photo']->store(
         'users',
-        'public'
+        'cloudinary'
     );
 }
 

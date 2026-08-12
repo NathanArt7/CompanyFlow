@@ -22,12 +22,9 @@ const initials = computed(() => {
 
 const roleLabel = computed(() => authStore.user?.role ?? '')
 
-const config = useRuntimeConfig()
-const photoUrl = computed(() => {
-  const photo = authStore.user?.photo
-  if (!photo) return null
-  return `${config.public.apiBase.replace(/\/api\/?$/, '')}/storage/${photo}`
-})
+// Le backend renvoie désormais directement une URL publique complète
+// (stockage externe Cloudinary).
+const photoUrl = computed(() => authStore.user?.photo ?? null)
 
 const isMenuOpen = ref(false)
 const isNotificationsOpen = ref(false)
