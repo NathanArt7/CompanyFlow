@@ -24,7 +24,10 @@ export const AppHeader: typeof import("../app/components/layout/AppHeader.vue")[
 export const AppSidebar: typeof import("../app/components/layout/AppSidebar.vue")['default']
 export const NotificationDropdown: typeof import("../app/components/layout/NotificationDropdown.vue")['default']
 export const ThemeToggle: typeof import("../app/components/layout/ThemeToggle.vue")['default']
+export const AppBootLoader: typeof import("../app/components/ui/AppBootLoader.vue")['default']
 export const Logo: typeof import("../app/components/ui/Logo.vue")['default']
+export const PageLoader: typeof import("../app/components/ui/PageLoader.vue")['default']
+export const ToastContainer: typeof import("../app/components/ui/ToastContainer.vue")['default']
 export const ActivityLogFilters: typeof import("../app/features/activity-logs/components/ActivityLogFilters.vue")['default']
 export const ActivityLogTable: typeof import("../app/features/activity-logs/components/ActivityLogTable.vue")['default']
 export const ActivityLogTabs: typeof import("../app/features/activity-logs/components/ActivityLogTabs.vue")['default']
@@ -165,7 +168,10 @@ export const LazyAppHeader: LazyComponent<typeof import("../app/components/layou
 export const LazyAppSidebar: LazyComponent<typeof import("../app/components/layout/AppSidebar.vue")['default']>
 export const LazyNotificationDropdown: LazyComponent<typeof import("../app/components/layout/NotificationDropdown.vue")['default']>
 export const LazyThemeToggle: LazyComponent<typeof import("../app/components/layout/ThemeToggle.vue")['default']>
+export const LazyAppBootLoader: LazyComponent<typeof import("../app/components/ui/AppBootLoader.vue")['default']>
 export const LazyLogo: LazyComponent<typeof import("../app/components/ui/Logo.vue")['default']>
+export const LazyPageLoader: LazyComponent<typeof import("../app/components/ui/PageLoader.vue")['default']>
+export const LazyToastContainer: LazyComponent<typeof import("../app/components/ui/ToastContainer.vue")['default']>
 export const LazyActivityLogFilters: LazyComponent<typeof import("../app/features/activity-logs/components/ActivityLogFilters.vue")['default']>
 export const LazyActivityLogTable: LazyComponent<typeof import("../app/features/activity-logs/components/ActivityLogTable.vue")['default']>
 export const LazyActivityLogTabs: LazyComponent<typeof import("../app/features/activity-logs/components/ActivityLogTabs.vue")['default']>

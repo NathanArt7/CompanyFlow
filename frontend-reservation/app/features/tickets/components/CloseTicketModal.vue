@@ -15,6 +15,7 @@ const emit = defineEmits<{
 }>()
 
 const ticketService = useTicketService()
+const toast = useToast()
 
 const selectedState = ref<'FONCTIONNEL' | 'HORS_SERVICE' | null>(null)
 const isSubmitting = ref(false)
@@ -41,6 +42,7 @@ async function handleSubmit() {
     const saved = await ticketService.close(props.ticket.id, selectedState.value)
     emit('saved', saved)
     emit('close')
+    toast.success('Ticket fermé avec succès.')
   } catch (e) {
     errorMessage.value = (e as { message?: string }).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {

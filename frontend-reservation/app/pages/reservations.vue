@@ -17,6 +17,7 @@ function todayIso(): string {
 }
 
 const reservationsService = useReservationsService()
+const toast = useToast()
 
 const selectedDate = ref(todayIso())
 const filters = reactive<ReservationFilters>({ roomId: null, status: null, userId: null })
@@ -143,6 +144,7 @@ async function confirmCancel() {
     loadReservations()
     weekStripRef.value?.refresh()
     dailySummaryRef.value?.refresh()
+    toast.success('Réservation annulée avec succès.')
   } catch (e) {
     cancelError.value = (e as { message?: string }).message ?? 'Impossible d\'annuler cette réservation.'
   } finally {

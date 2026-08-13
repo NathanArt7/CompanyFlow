@@ -18,6 +18,7 @@ const emit = defineEmits<{
 const authStore = useAuthStore()
 const equipmentService = useEquipmentService()
 const ticketService = useTicketService()
+const toast = useToast()
 
 const equipments = ref<RawEquipment[]>([])
 const isLoadingEquipments = ref(false)
@@ -114,6 +115,7 @@ async function handleSubmit() {
     })
     emit('saved', saved)
     emit('close')
+    toast.success('Ticket créé avec succès.')
   } catch (e) {
     errorMessage.value = (e as { message?: string }).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {

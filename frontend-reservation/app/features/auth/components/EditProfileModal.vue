@@ -12,6 +12,7 @@ const emit = defineEmits<{
 }>()
 
 const authStore = useAuthStore()
+const toast = useToast()
 
 const form = ref({
   nom: '',
@@ -75,6 +76,7 @@ async function handleSubmit() {
   try {
     await authStore.updateProfile(formData)
     emit('close')
+    toast.success('Profil modifié avec succès.')
   } catch (e) {
     errorMessage.value = (e as ApiError).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {

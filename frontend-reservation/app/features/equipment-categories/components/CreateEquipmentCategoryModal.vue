@@ -16,6 +16,7 @@ const emit = defineEmits<{
 }>()
 
 const equipmentCategoryService = useEquipmentCategoryService()
+const toast = useToast()
 
 const isEditing = computed(() => !!props.category)
 
@@ -59,6 +60,7 @@ async function handleSubmit() {
       : await equipmentCategoryService.create(payload)
     emit('saved', saved)
     emit('close')
+    toast.success(isEditing.value ? 'Catégorie modifiée avec succès.' : 'Catégorie créée avec succès.')
   } catch (e) {
     errorMessage.value = (e as ApiError).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {

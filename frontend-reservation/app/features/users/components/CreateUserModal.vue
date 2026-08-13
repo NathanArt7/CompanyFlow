@@ -16,6 +16,7 @@ const emit = defineEmits<{
 }>()
 
 const userService = useUserService()
+const toast = useToast()
 
 const isEditing = computed(() => !!props.user)
 
@@ -100,6 +101,7 @@ async function handleSubmit() {
     }
     emit('saved')
     emit('close')
+    toast.success(isEditing.value ? 'Utilisateur modifié avec succès.' : 'Utilisateur créé avec succès.')
   } catch (e) {
     errorMessage.value = (e as ApiError).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {

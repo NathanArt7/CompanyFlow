@@ -8,6 +8,7 @@ import type { ExportColumn, ExportRow } from '~/composables/useTableExport'
 
 const equipmentService = useEquipmentService()
 const authStore = useAuthStore()
+const toast = useToast()
 
 const canFullEdit = computed(() => authStore.permissions.includes('modifier_materiel'))
 const canEditState = computed(() => authStore.permissions.includes('modifier_etat_materiel'))
@@ -145,6 +146,7 @@ async function confirmDelete() {
     equipmentPendingDelete.value = null
     if (equipments.value.length === 1 && page.value > 1) page.value -= 1
     refreshAfterChange()
+    toast.success('Équipement supprimé avec succès.')
   } catch {
     deleteError.value = 'Impossible de supprimer cet équipement.'
   } finally {
