@@ -1,0 +1,9 @@
+{
+  "pid": 34332,
+  "startedAt": 1786580352667,
+  "command": "dev",
+  "cwd": "C:/Users/labar/Desktop/Stage/CompanyFlow/frontend-reservation",
+  "port": 3001,
+  "hostname": "::1",
+  "url": "http://[::1]:3001"
+}

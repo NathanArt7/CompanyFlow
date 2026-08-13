@@ -17,6 +17,7 @@ const emit = defineEmits<{
 }>()
 
 const reservationSettingService = useReservationSettingService()
+const toast = useToast()
 
 const dayLabels: Record<DayOfWeek, string> = {
   MONDAY: 'Lundi',
@@ -83,6 +84,7 @@ async function handleSubmit() {
       })),
     })
     emit('saved', saved)
+    toast.success('Horaires modifiés avec succès.')
   } catch (e) {
     errorMessage.value = (e as ApiError).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {

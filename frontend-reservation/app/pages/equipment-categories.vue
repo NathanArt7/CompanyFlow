@@ -7,6 +7,7 @@ import type { RawEquipmentCategory } from '~/features/equipment-categories/type'
 import { useEquipmentCategoryService } from '~/features/equipment-categories/services/equipment-category.service'
 
 const equipmentCategoryService = useEquipmentCategoryService()
+const toast = useToast()
 
 const search = ref('')
 const page = ref(1)
@@ -105,6 +106,7 @@ async function confirmDelete() {
     categoryPendingDelete.value = null
     if (categories.value.length === 1 && page.value > 1) page.value -= 1
     refreshAfterChange()
+    toast.success('Catégorie supprimée avec succès.')
   } catch (e) {
     deleteError.value = (e as ApiError).message ?? 'Impossible de supprimer cette catégorie.'
   } finally {

@@ -16,6 +16,7 @@ const emit = defineEmits<{
 }>()
 
 const entrepriseService = useEntrepriseService()
+const toast = useToast()
 
 const form = ref({
   nom: '',
@@ -75,6 +76,7 @@ async function handleSubmit() {
   try {
     const saved = await entrepriseService.update(formData)
     emit('saved', saved)
+    toast.success('Informations de l\'entreprise modifiées avec succès.')
   } catch (e) {
     errorMessage.value = (e as ApiError).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {

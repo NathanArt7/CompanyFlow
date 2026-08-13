@@ -8,7 +8,9 @@ export function useNotificationService() {
   }
 
   async function getUnreadCount() {
-    const response = await apiFetch<{ count: number }>('/notifications/unread-count')
+    // silent : ce polling tourne en arrière-plan toutes les 60s (AppHeader.vue),
+    // indépendamment de toute navigation — ne doit jamais redéclencher le loader de page.
+    const response = await apiFetch<{ count: number }>('/notifications/unread-count', { silent: true })
     return response.count
   }
 

@@ -92,26 +92,40 @@ async function loadReservations() {
 
 watch(selectedDate, loadReservations)
 
-onMounted(async () => {
-  loadReservations()
-
+async function loadRooms() {
   try {
     rooms.value = (await roomService.list()).filter(room => room.type.value === 'MEETING')
   } catch {
     rooms.value = []
   }
+}
 
+async function loadEquipments() {
   try {
     equipments.value = (await equipmentService.paginate({ usage_type: 'EMPRUNTABLE', per_page: 100 })).data
   } catch {
     equipments.value = []
   }
+}
 
+async function loadReservationSetting() {
   try {
     reservationSetting.value = await reservationSettingService.get()
   } catch {
     reservationSetting.value = null
   }
+}
+
+onMounted(() => {
+  // Les 4 appels doivent démarrer ensemble (pas les uns après les autres avec des
+  // await séquentiels) : sinon le compteur de requêtes en cours (pendingRequests,
+  // cf. useApi.ts) retombe brièvement à 0 dès que la 1ère requête finit, avant même
+  // que les suivantes aient démarré. Le loader de page (app.vue) se cache alors trop
+  // tôt, et la page continue visiblement de se remplir après sa disparition.
+  loadReservations()
+  loadRooms()
+  loadEquipments()
+  loadReservationSetting()
 })
 </script>
 

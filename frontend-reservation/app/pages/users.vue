@@ -8,6 +8,7 @@ import { useUserService } from '~/features/users/services/user.service'
 import type { ExportColumn, ExportRow } from '~/composables/useTableExport'
 
 const userService = useUserService()
+const toast = useToast()
 
 const filters = ref<UserFilters>({ search: '', roleId: null, actif: null })
 const page = ref(1)
@@ -114,10 +115,12 @@ async function confirmToggleStatus() {
 
   isTogglingStatus.value = true
   toggleStatusError.value = null
+  const wasActive = userPendingStatusChange.value.actif
   try {
-    await userService.updateStatus(userPendingStatusChange.value.id, !userPendingStatusChange.value.actif)
+    await userService.updateStatus(userPendingStatusChange.value.id, !wasActive)
     userPendingStatusChange.value = null
     refreshAfterChange()
+    toast.success(wasActive ? 'Compte désactivé avec succès.' : 'Compte activé avec succès.')
   } catch (e) {
     toggleStatusError.value = (e as ApiError).message ?? 'Impossible de mettre à jour le statut de ce compte.'
   } finally {
@@ -145,6 +148,7 @@ async function confirmDelete() {
     userPendingDelete.value = null
     if (users.value.length === 1 && page.value > 1) page.value -= 1
     refreshAfterChange()
+    toast.success('Utilisateur supprimé avec succès.')
   } catch (e) {
     deleteError.value = (e as ApiError).message ?? 'Impossible de supprimer cet utilisateur.'
   } finally {

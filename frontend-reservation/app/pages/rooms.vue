@@ -10,6 +10,7 @@ import type { RawReservation } from '~/features/reservations/type'
 
 const roomService = useRoomService()
 const reservationsService = useReservationsService()
+const toast = useToast()
 
 const filters = ref<RoomFilters>({ search: '', type: null, statut: null })
 const page = ref(1)
@@ -152,6 +153,7 @@ async function confirmDelete() {
     upcomingReservationsForDelete.value = []
     if (rooms.value.length === 1 && page.value > 1) page.value -= 1
     refreshAfterChange()
+    toast.success('Salle supprimée avec succès.')
   } catch {
     deleteError.value = 'Impossible de supprimer cette salle.'
   } finally {

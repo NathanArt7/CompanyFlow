@@ -28,44 +28,59 @@ function normalizeError(error: unknown): ApiError {
   }
 }
 
-// useCookie() ne partage pas la même ref réactive entre plusieurs appels indépendants :
-// écrire le token puis le relire immédiatement (ex. juste après le login) peut lire une
-// valeur pas encore synchronisée. useState() garantit une ref unique partagée au sein de
-// l'instance de l'app ; le cookie ne sert qu'à faire persister le token entre les rechargements.
+const TOKEN_STORAGE_KEY = 'auth_token'
+
+// sessionStorage (et non un cookie) : propre à chaque onglet, ce qui permet d'être connecté
+// à des comptes différents dans deux onglets du même navigateur. Contrepartie : le serveur
+// (SSR) n'a plus aucun accès au token, sessionStorage n'existant que côté navigateur — c'est
+// pour ça que les middlewares auth.ts / guest.ts s'exécutent désormais uniquement côté client
+// (cf. useAppBooting, qui masque toute la page le temps de cette vérification cliente).
 function useAuthToken() {
-  // secure: désactivé en dev (process.dev) car le serveur local tourne en http:// —
-  // un cookie "secure" y serait silencieusement ignoré par le navigateur, cassant la
-  // connexion. sameSite: 'strict' limite l'envoi du cookie aux requêtes same-site,
-  // réduisant l'exposition du token en cas de faille XSS ailleurs dans l'app (un vrai
-  // cookie httpOnly serait préférable mais demanderait que ce soit le backend Laravel,
-  // et non ce composable côté client, qui pose le cookie via l'en-tête Set-Cookie).
-  const cookie = useCookie<string | null>('auth_token', {
-    default: () => null,
-    secure: !process.dev,
-    sameSite: 'strict',
-  })
-  const token = useState<string | null>('auth-token', () => cookie.value)
+  const token = useState<string | null>('auth-token', () => null)
+
+  // Le payload SSR ne contient jamais le token (il est toujours null côté serveur) : on
+  // l'hydrate depuis sessionStorage au premier accès côté client.
+  if (import.meta.client && token.value === null) {
+    token.value = sessionStorage.getItem(TOKEN_STORAGE_KEY)
+  }
 
   function setToken(value: string | null) {
     token.value = value
-    cookie.value = value
+    if (import.meta.client) {
+      if (value) sessionStorage.setItem(TOKEN_STORAGE_KEY, value)
+      else sessionStorage.removeItem(TOKEN_STORAGE_KEY)
+    }
   }
 
   return { token, setToken }
 }
 
+// Compteur de requêtes en cours partagé par toute l'app : permet au loader de page
+// (app.vue) de savoir quand les données réellement affichées (pas juste le
+// changement de route) sont arrivées. { silent: true } exclut un appel de ce
+// compteur (ex. le polling en arrière-plan des notifications, qui ne doit jamais
+// redéclencher le loader plein écran).
+export function usePendingRequestCount() {
+  return useState<number>('pending-request-count', () => 0)
+}
+
 export function useApi() {
   const config = useRuntimeConfig()
   const { token: authToken, setToken } = useAuthToken()
+  const pendingCount = usePendingRequestCount()
 
   async function apiFetch<T>(path: string, options: Record<string, unknown> = {}): Promise<T> {
+    const { silent, ...fetchOptions } = options
+
+    if (!silent) pendingCount.value++
+
     try {
       return await $fetch<T>(path, {
         baseURL: config.public.apiBase,
-        ...options,
+        ...fetchOptions,
         headers: {
           Accept: 'application/json',
-          ...(options.headers as Record<string, string> | undefined),
+          ...(fetchOptions.headers as Record<string, string> | undefined),
           ...(authToken.value ? { Authorization: `Bearer ${authToken.value}` } : {}),
         },
       })
@@ -79,6 +94,8 @@ export function useApi() {
       }
 
       throw normalized
+    } finally {
+      if (!silent) pendingCount.value--
     }
   }
 

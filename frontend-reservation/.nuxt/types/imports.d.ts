@@ -164,6 +164,7 @@ declare global {
   const useAnimate: typeof import('../../node_modules/@vueuse/core').useAnimate
   const useAnnouncer: typeof import('../../node_modules/nuxt/dist/app/composables/announcer').useAnnouncer
   const useApi: typeof import('../../app/composables/useApi').useApi
+  const useAppBooting: typeof import('../../app/composables/useAppBooting').useAppBooting
   const useAppConfig: typeof import('../../node_modules/nuxt/dist/app/config').useAppConfig
   const useArrayDifference: typeof import('../../node_modules/@vueuse/core').useArrayDifference
   const useArrayEvery: typeof import('../../node_modules/@vueuse/core').useArrayEvery
@@ -276,8 +277,10 @@ declare global {
   const useOffsetPagination: typeof import('../../node_modules/@vueuse/core').useOffsetPagination
   const useOnline: typeof import('../../node_modules/@vueuse/core').useOnline
   const usePageLeave: typeof import('../../node_modules/@vueuse/core').usePageLeave
+  const usePageLoading: typeof import('../../app/composables/usePageLoading').usePageLoading
   const useParallax: typeof import('../../node_modules/@vueuse/core').useParallax
   const useParentElement: typeof import('../../node_modules/@vueuse/core').useParentElement
+  const usePendingRequestCount: typeof import('../../app/composables/useApi').usePendingRequestCount
   const usePerformanceObserver: typeof import('../../node_modules/@vueuse/core').usePerformanceObserver
   const usePermission: typeof import('../../node_modules/@vueuse/core').usePermission
   const usePinia: typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables').usePinia
@@ -392,6 +395,7 @@ declare global {
   const useTitle: typeof import('../../node_modules/@vueuse/core').useTitle
   const useToNumber: typeof import('../../node_modules/@vueuse/core').useToNumber
   const useToString: typeof import('../../node_modules/@vueuse/core').useToString
+  const useToast: typeof import('../../app/composables/useToast').useToast
   const useToggle: typeof import('../../node_modules/@vueuse/core').useToggle
   const useTransition: typeof import('../../node_modules/@vueuse/core').useTransition
   const useTransitionState: typeof import('vue').useTransitionState
@@ -449,6 +453,9 @@ declare global {
   // @ts-ignore
   export type { Theme } from '../../app/composables/useTheme'
   import('../../app/composables/useTheme')
+  // @ts-ignore
+  export type { ToastItem } from '../../app/composables/useToast'
+  import('../../app/composables/useToast')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'
@@ -617,6 +624,7 @@ declare module 'vue' {
     readonly useAnimate: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useAnimate']>
     readonly useAnnouncer: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/announcer')['useAnnouncer']>
     readonly useApi: UnwrapRef<typeof import('../../app/composables/useApi')['useApi']>
+    readonly useAppBooting: UnwrapRef<typeof import('../../app/composables/useAppBooting')['useAppBooting']>
     readonly useAppConfig: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/config')['useAppConfig']>
     readonly useArrayDifference: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useArrayDifference']>
     readonly useArrayEvery: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useArrayEvery']>
@@ -729,8 +737,10 @@ declare module 'vue' {
     readonly useOffsetPagination: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useOffsetPagination']>
     readonly useOnline: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useOnline']>
     readonly usePageLeave: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['usePageLeave']>
+    readonly usePageLoading: UnwrapRef<typeof import('../../app/composables/usePageLoading')['usePageLoading']>
     readonly useParallax: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useParallax']>
     readonly useParentElement: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useParentElement']>
+    readonly usePendingRequestCount: UnwrapRef<typeof import('../../app/composables/useApi')['usePendingRequestCount']>
     readonly usePerformanceObserver: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['usePerformanceObserver']>
     readonly usePermission: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['usePermission']>
     readonly usePinia: UnwrapRef<typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['usePinia']>
@@ -845,6 +855,7 @@ declare module 'vue' {
     readonly useTitle: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useTitle']>
     readonly useToNumber: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useToNumber']>
     readonly useToString: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useToString']>
+    readonly useToast: UnwrapRef<typeof import('../../app/composables/useToast')['useToast']>
     readonly useToggle: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useToggle']>
     readonly useTransition: UnwrapRef<typeof import('../../node_modules/@vueuse/core')['useTransition']>
     readonly useTransitionState: UnwrapRef<typeof import('vue')['useTransitionState']>

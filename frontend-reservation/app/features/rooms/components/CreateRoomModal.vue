@@ -16,6 +16,7 @@ const emit = defineEmits<{
 }>()
 
 const roomService = useRoomService()
+const toast = useToast()
 
 const isEditing = computed(() => !!props.room)
 
@@ -112,6 +113,7 @@ async function handleSubmit() {
       : await roomService.create(payload)
     emit('saved', saved)
     emit('close')
+    toast.success(isEditing.value ? 'Salle modifiée avec succès.' : 'Salle ajoutée avec succès.')
   } catch (e) {
     errorMessage.value = (e as ApiError).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {

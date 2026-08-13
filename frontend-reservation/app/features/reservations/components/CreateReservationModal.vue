@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { X, Loader2 } from 'lucide-vue-next'
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { AvailableEquipment, RawReservation } from '../type'
 import { useReservationsService } from '../services/reservations.service'
 import type { RawRoom } from '~/features/rooms/type'
@@ -21,9 +21,11 @@ const isEditing = computed(() => !!props.reservation)
 
 const reservationsService = useReservationsService()
 const roomService = useRoomService()
+const toast = useToast()
 
 const rooms = ref<RawRoom[]>([])
 const roomsError = ref(false)
+const roomsLoaded = ref(false)
 
 function todayDateString() {
   const now = new Date()
@@ -80,8 +82,14 @@ function resetForm() {
 }
 
 async function loadRooms() {
+  // Ce composant reste toujours monté (Teleport), même quand la modale est fermée :
+  // on ne charge donc les salles qu'à la première ouverture, pas dès le montage,
+  // pour éviter un appel /rooms inutile (en doublon avec ReservationsFilters) à
+  // chaque chargement de la page réservations.
+  if (roomsLoaded.value) return
   try {
     rooms.value = (await roomService.list()).filter(room => room.type.value === 'MEETING')
+    roomsLoaded.value = true
   } catch {
     roomsError.value = true
   }
@@ -116,10 +124,9 @@ watch(() => props.isOpen, (open) => {
   if (open) {
     resetForm()
     loadEquipments()
+    loadRooms()
   }
 })
-
-onMounted(loadRooms)
 
 function toggleEquipment(id: number) {
   const index = form.value.equipmentIds.indexOf(id)
@@ -216,6 +223,7 @@ async function handleSubmit() {
       : await reservationsService.createReservation(payload)
     emit('saved', saved)
     emit('close')
+    toast.success(isEditing.value ? 'Réservation modifiée avec succès.' : 'Réservation créée avec succès.')
   } catch (e) {
     errorMessage.value = (e as { message?: string }).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {

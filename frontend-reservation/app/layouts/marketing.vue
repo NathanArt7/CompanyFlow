@@ -1,6 +1,7 @@
 <template>
-  <div class="marketing-dark min-h-screen bg-background text-foreground">
+  <div class="marketing-dark relative min-h-screen bg-background text-foreground">
     <slot />
+    <PageLoader />
   </div>
 </template>
 

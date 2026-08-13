@@ -15,6 +15,7 @@ const emit = defineEmits<{
 }>()
 
 const equipmentService = useEquipmentService()
+const toast = useToast()
 
 const empruntableStates: Array<{ value: string, label: string }> = [
   { value: 'DISPONIBLE', label: 'Disponible' },
@@ -60,6 +61,7 @@ async function handleSubmit() {
     const saved = await equipmentService.updateStatus(props.equipment.id, selectedState.value)
     emit('saved', saved)
     emit('close')
+    toast.success('État modifié avec succès.')
   } catch (e) {
     errorMessage.value = (e as { message?: string }).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {

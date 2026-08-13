@@ -25,6 +25,7 @@ const equipmentService = useEquipmentService()
 const categoryService = useEquipmentCategoryService()
 const roomService = useRoomService()
 const userService = useUserService()
+const toast = useToast()
 
 const isEditing = computed(() => !!props.equipment)
 
@@ -222,6 +223,7 @@ async function handleSubmit() {
       : await equipmentService.create(payload)
     emit('saved', saved)
     emit('close')
+    toast.success(isEditing.value ? 'Équipement modifié avec succès.' : 'Équipement ajouté avec succès.')
   } catch (e) {
     errorMessage.value = (e as ApiError).message ?? 'Une erreur est survenue. Veuillez réessayer.'
   } finally {
