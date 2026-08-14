@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreEntrepriseRequest extends FormRequest
 {
@@ -37,7 +38,8 @@ class StoreEntrepriseRequest extends FormRequest
             'required',
             'email',
             'max:255',
-            'unique:users,email',
+            // whereNull('deleted_at') : cf. StoreUserRequest.
+            Rule::unique('users', 'email')->whereNull('deleted_at'),
         ],
 
     ];

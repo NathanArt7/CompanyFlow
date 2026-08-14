@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreUserRequest extends FormRequest
 {
@@ -22,7 +23,10 @@ class StoreUserRequest extends FormRequest
         return [
             'nom'      => ['required', 'string', 'max:255'],
             'prenom'   => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', 'unique:users,email'],
+            // whereNull('deleted_at') : un compte supprimé (soft delete) ne doit pas
+            // bloquer indéfiniment la réutilisation de son email pour une nouvelle
+            // invitation (ex. lien d'activation expiré puis compte supprimé).
+            'email'    => ['required', 'email', Rule::unique('users', 'email')->whereNull('deleted_at')],
             'role_id'  => ['required', 'exists:roles,id'],
         ];
     }
